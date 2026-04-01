@@ -6,9 +6,10 @@ import broomsImg from '@/assets/brooms-category.jpg';
 import booksImg from '@/assets/books-category.jpg';
 import potionsImg from '@/assets/potions-category.jpg';
 import robesImg from '@/assets/robes-category.jpg';
+import wandIcon from '@/assets/wand-icon.png';
 
 const categories = [
-  { path: '/wands', label: '🪄 Wands', subtitle: "Ollivander's Finest", image: wandsImg },
+  { path: '/wands', label: 'Wands', subtitle: "Ollivander's Finest", image: wandsImg, icon: wandIcon },
   { path: '/brooms', label: '🧹 Brooms', subtitle: 'Racing & Travel', image: broomsImg },
   { path: '/books', label: '📚 Spell Books', subtitle: 'Ancient Knowledge', image: booksImg },
   { path: '/potions', label: '🧪 Potions', subtitle: 'Elixirs & Draughts', image: potionsImg },
