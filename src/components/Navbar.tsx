@@ -75,10 +75,13 @@ const Navbar = () => {
               key={item.path}
               to={item.path}
               onClick={() => setMobileOpen(false)}
-              className={`block px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted ${
                 location.pathname === item.path ? 'text-primary bg-muted' : 'text-foreground'
               }`}
             >
+              {'isImage' in item && item.isImage ? (
+                <img src={item.icon} alt="" className="h-4 w-4 object-contain" />
+              ) : null}
               {item.label}
             </Link>
           ))}
