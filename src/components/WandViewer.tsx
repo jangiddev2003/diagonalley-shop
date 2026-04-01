@@ -3,6 +3,7 @@ import { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { ShoppingCart, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
+import wandIcon from '@/assets/wand-icon.png';
 
 const WandViewer = ({ wand }: { wand: Product }) => {
   const [rotation, setRotation] = useState(0);
@@ -56,10 +57,14 @@ const WandViewer = ({ wand }: { wand: Product }) => {
         onTouchEnd={handleMouseUp}
       >
         <div
-          className="text-7xl transition-none"
+          className="transition-none"
           style={{ transform: `perspective(400px) rotateY(${rotation}deg)` }}
         >
-          🪄
+          {wand.image ? (
+            <img src={wand.image} alt={wand.name} className="h-24 w-auto object-contain" />
+          ) : (
+            <img src={wandIcon} alt="wand" className="h-20 w-20 object-contain" />
+          )}
         </div>
         <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[10px] text-muted-foreground">
           <RotateCcw className="h-3 w-3" /> Drag to rotate

@@ -2,9 +2,10 @@ import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import { useState } from 'react';
 import { ShoppingCart, Menu, X, Sparkles } from 'lucide-react';
+import wandIcon from '@/assets/wand-icon.png';
 
 const navItems = [
-  { path: '/wands', label: '🪄 Wands' },
+  { path: '/wands', label: 'Wands', icon: wandIcon, isImage: true },
   { path: '/brooms', label: '🧹 Brooms' },
   { path: '/books', label: '📚 Books' },
   { path: '/potions', label: '🧪 Potions' },
@@ -32,10 +33,13 @@ const Navbar = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted hover:text-primary ${
+              className={`px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted hover:text-primary flex items-center gap-1.5 ${
                 location.pathname === item.path ? 'bg-muted text-primary glow-gold' : 'text-foreground'
               }`}
             >
+              {'isImage' in item && item.isImage ? (
+                <img src={item.icon} alt="" className="h-4 w-4 object-contain" />
+              ) : null}
               {item.label}
             </Link>
           ))}
@@ -71,10 +75,13 @@ const Navbar = () => {
               key={item.path}
               to={item.path}
               onClick={() => setMobileOpen(false)}
-              className={`block px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted ${
                 location.pathname === item.path ? 'text-primary bg-muted' : 'text-foreground'
               }`}
             >
+              {'isImage' in item && item.isImage ? (
+                <img src={item.icon} alt="" className="h-4 w-4 object-contain" />
+              ) : null}
               {item.label}
             </Link>
           ))}

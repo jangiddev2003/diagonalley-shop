@@ -12,7 +12,19 @@ export interface Product {
 }
 
 // Wand products
+import harryWand from '@/assets/wands/harry-potter-wand.jpg';
+import hermioneWand from '@/assets/wands/hermione-wand.jpg';
+import elderWand from '@/assets/wands/elder-wand.jpg';
+import voldemortWand from '@/assets/wands/voldemort-wand.jpg';
+import ronWand from '@/assets/wands/ron-wand.jpg';
+
+// Wand products — iconic Harry Potter wands first, then generic combinations
 export const wands: Product[] = [
+  { id: 'w-harry', name: "Harry Potter's Wand", description: 'Holly wood with a phoenix feather core. The brother wand to Voldemort\'s — chose Harry in Ollivander\'s shop and served him faithfully through every battle.', price: 20, category: 'wands', image: harryWand, rarity: 'legendary', details: { core: 'Phoenix Feather', wood: 'Holly', length: '11"', owner: 'Harry Potter' } },
+  { id: 'w-hermione', name: "Hermione Granger's Wand", description: 'Vine wood with a dragon heartstring core. Perfect for a witch of exceptional brilliance — excels at precise, complex spellwork.', price: 18, category: 'wands', image: hermioneWand, rarity: 'legendary', details: { core: 'Dragon Heartstring', wood: 'Vine', length: '10¾"', owner: 'Hermione Granger' } },
+  { id: 'w-ron', name: "Ron Weasley's Wand", description: 'Willow wood with a unicorn hair core. A loyal wand for a loyal friend — performs best when its owner shows true courage.', price: 14, category: 'wands', image: ronWand, rarity: 'rare', details: { core: 'Unicorn Hair', wood: 'Willow', length: '14"', owner: 'Ron Weasley' } },
+  { id: 'w-elder', name: 'The Elder Wand', description: 'Elder wood with a thestral tail hair core. The most powerful wand in existence — one of the three Deathly Hallows. Its allegiance must be won.', price: 50, category: 'wands', image: elderWand, rarity: 'legendary', details: { core: 'Thestral Tail Hair', wood: 'Elder', length: '15"', owner: 'Albus Dumbledore' } },
+  { id: 'w-voldemort', name: "Voldemort's Wand", description: 'Yew wood with a phoenix feather core. A wand of terrible power — the twin core to Harry Potter\'s wand, forged for dark ambition.', price: 25, category: 'wands', image: voldemortWand, rarity: 'legendary', details: { core: 'Phoenix Feather', wood: 'Yew', length: '13½"', owner: 'Tom Riddle' } },
   { id: 'w1', name: 'Unicorn Core & Sycamore Wood', description: 'A wand of great versatility, favoured by those who seek adventure. The sycamore wood craves stimulation and new experiences.', price: 7, category: 'wands', image: '', rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Sycamore', length: '11¾"' } },
   { id: 'w2', name: 'Unicorn Core & Laurel Wood', description: 'A wand that cannot tolerate laziness in its owner. Laurel wands are said to issue a spontaneous lightning bolt if another witch or wizard attempts to steal it.', price: 7, category: 'wands', image: '', rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Laurel', length: '12"' } },
   { id: 'w3', name: 'Dragon Core & Sycamore Wood', description: 'A powerful combination producing flashy spells. The dragon heartstring core gives this wand a fiery temperament.', price: 8, category: 'wands', image: '', rarity: 'common', details: { core: 'Dragon Heartstring', wood: 'Sycamore', length: '10¾"' } },

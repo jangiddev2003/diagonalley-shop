@@ -6,9 +6,10 @@ import broomsImg from '@/assets/brooms-category.jpg';
 import booksImg from '@/assets/books-category.jpg';
 import potionsImg from '@/assets/potions-category.jpg';
 import robesImg from '@/assets/robes-category.jpg';
+import wandIcon from '@/assets/wand-icon.png';
 
 const categories = [
-  { path: '/wands', label: '🪄 Wands', subtitle: "Ollivander's Finest", image: wandsImg },
+  { path: '/wands', label: 'Wands', subtitle: "Ollivander's Finest", image: wandsImg, icon: wandIcon },
   { path: '/brooms', label: '🧹 Brooms', subtitle: 'Racing & Travel', image: broomsImg },
   { path: '/books', label: '📚 Spell Books', subtitle: 'Ancient Knowledge', image: booksImg },
   { path: '/potions', label: '🧪 Potions', subtitle: 'Elixirs & Draughts', image: potionsImg },
@@ -67,7 +68,8 @@ const Index = () => (
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
             </div>
             <div className="absolute bottom-0 left-0 right-0 p-5">
-              <h3 className="font-display text-xl font-bold text-foreground group-hover:text-primary transition-colors">
+              <h3 className="font-display text-xl font-bold text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
+                {'icon' in cat && cat.icon ? <img src={cat.icon} alt="" className="h-5 w-5 object-contain" /> : null}
                 {cat.label}
               </h3>
               <p className="text-sm text-muted-foreground font-body">{cat.subtitle}</p>

@@ -2,6 +2,7 @@ import { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { ShoppingCart, Star } from 'lucide-react';
 import { toast } from 'sonner';
+import wandIcon from '@/assets/wand-icon.png';
 
 // Generate a deterministic gradient based on product id
 const getCardGradient = (id: string) => {
@@ -34,13 +35,17 @@ const ProductCard = ({ product }: { product: Product }) => {
     >
       {/* Image placeholder area */}
       <div className="relative h-48 overflow-hidden bg-muted/30 flex items-center justify-center">
-        <div className="text-6xl opacity-60 group-hover:scale-110 transition-transform duration-500">
-          {product.category === 'wands' && '🪄'}
-          {product.category === 'brooms' && '🧹'}
-          {product.category === 'books' && '📚'}
-          {product.category === 'potions' && '🧪'}
-          {product.category === 'robes' && '🧙'}
-        </div>
+        {product.image ? (
+          <img src={product.image} alt={product.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+        ) : (
+          <div className="text-6xl opacity-60 group-hover:scale-110 transition-transform duration-500">
+            {product.category === 'wands' && <img src={wandIcon} alt="wand" className="h-20 w-20 object-contain" />}
+            {product.category === 'brooms' && '🧹'}
+            {product.category === 'books' && '📚'}
+            {product.category === 'potions' && '🧪'}
+            {product.category === 'robes' && '🧙'}
+          </div>
+        )}
         {/* Shimmer overlay on hover */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer transition-opacity" 
           style={{ backgroundSize: '200% 100%' }}
