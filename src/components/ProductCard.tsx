@@ -2,6 +2,7 @@ import { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { ShoppingCart, Star } from 'lucide-react';
 import { toast } from 'sonner';
+import wandIcon from '@/assets/wand-icon.png';
 
 // Generate a deterministic gradient based on product id
 const getCardGradient = (id: string) => {
