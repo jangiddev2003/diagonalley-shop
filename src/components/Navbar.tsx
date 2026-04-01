@@ -33,10 +33,13 @@ const Navbar = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted hover:text-primary ${
+              className={`px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted hover:text-primary flex items-center gap-1.5 ${
                 location.pathname === item.path ? 'bg-muted text-primary glow-gold' : 'text-foreground'
               }`}
             >
+              {'isImage' in item && item.isImage ? (
+                <img src={item.icon} alt="" className="h-4 w-4 object-contain" />
+              ) : null}
               {item.label}
             </Link>
           ))}
