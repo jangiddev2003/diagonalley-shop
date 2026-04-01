@@ -3,6 +3,7 @@ import { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { ShoppingCart, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
+import wandIcon from '@/assets/wand-icon.png';
 
 const WandViewer = ({ wand }: { wand: Product }) => {
   const [rotation, setRotation] = useState(0);
