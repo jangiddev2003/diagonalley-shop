@@ -2,9 +2,10 @@ import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
 import { useState } from 'react';
 import { ShoppingCart, Menu, X, Sparkles } from 'lucide-react';
+import wandIcon from '@/assets/wand-icon.png';
 
 const navItems = [
-  { path: '/wands', label: '🪄 Wands' },
+  { path: '/wands', label: 'Wands', icon: wandIcon, isImage: true },
   { path: '/brooms', label: '🧹 Brooms' },
   { path: '/books', label: '📚 Books' },
   { path: '/potions', label: '🧪 Potions' },
