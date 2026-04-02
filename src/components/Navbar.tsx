@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ShoppingCart, Menu, X, Sparkles } from 'lucide-react';
 import wandIcon from '@/assets/wand-icon.png';
 import broomIcon from '@/assets/broom-icon.png';
@@ -16,10 +16,25 @@ const navItems = [
   { path: '/robes', label: 'Robes', icon: robesIcon },
 ];
 
+const extraLinks = [
+  { path: '/sorting-hat', label: '🎩 Sorting Hat' },
+  { path: '/spells', label: '⚡ Spells' },
+  { path: '/platform', label: '🚂 9¾' },
+];
+
 const Navbar = () => {
   const { totalItems } = useCart();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    const saved = localStorage.getItem('diagonally-theme');
+    return saved ? saved === 'dark' : true;
+  });
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', !isDark);
+    localStorage.setItem('diagonally-theme', isDark ? 'dark' : 'light');
+  }, [isDark]);
 
   return (
     <nav className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
@@ -31,7 +46,7 @@ const Navbar = () => {
           </span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-1">
+        <div className="hidden lg:flex items-center gap-1">
           {navItems.map(item => (
             <Link
               key={item.path}
@@ -44,9 +59,36 @@ const Navbar = () => {
               {item.label}
             </Link>
           ))}
+          {extraLinks.map(item => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted hover:text-primary ${
+                location.pathname === item.path ? 'bg-muted text-primary glow-gold' : 'text-foreground'
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          {/* Lumos / Nox Toggle */}
+          <button
+            onClick={() => setIsDark(prev => !prev)}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medieval border border-border bg-muted hover:bg-muted/80 hover:text-primary transition-all"
+            title={isDark ? 'Switch to Light mode' : 'Switch to Dark mode'}
+          >
+            {isDark ? '🕯️ Lumos' : '🌑 Nox'}
+          </button>
+
+          <Link
+            to="/login"
+            className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medieval text-foreground hover:bg-muted hover:text-primary transition-all"
+          >
+            🔐
+          </Link>
+
           <Link
             to="/cart"
             className="relative flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted hover:text-primary"
@@ -60,7 +102,7 @@ const Navbar = () => {
           </Link>
 
           <button
-            className="md:hidden p-2 text-foreground"
+            className="lg:hidden p-2 text-foreground"
             onClick={() => setMobileOpen(!mobileOpen)}
           >
             {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -69,7 +111,7 @@ const Navbar = () => {
       </div>
 
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-background px-4 pb-4 animate-fade-in">
+        <div className="lg:hidden border-t border-border bg-background px-4 pb-4 animate-fade-in">
           {navItems.map(item => (
             <Link
               key={item.path}
@@ -83,6 +125,25 @@ const Navbar = () => {
               {item.label}
             </Link>
           ))}
+          {extraLinks.map(item => (
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={() => setMobileOpen(false)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted ${
+                location.pathname === item.path ? 'text-primary bg-muted' : 'text-foreground'
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Link
+            to="/login"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medieval text-foreground hover:bg-muted"
+          >
+            🔐 Login
+          </Link>
         </div>
       )}
     </nav>

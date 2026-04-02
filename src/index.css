@@ -54,6 +54,39 @@
     --maroon-light: 0 35% 28%;
     --enchanted: 270 40% 35%;
   }
+
+  /* Light theme (Lumos) */
+  .light {
+    --background: 38 40% 92%;
+    --foreground: 25 40% 12%;
+
+    --card: 38 35% 88%;
+    --card-foreground: 25 40% 12%;
+
+    --popover: 38 35% 90%;
+    --popover-foreground: 25 40% 12%;
+
+    --primary: 43 65% 42%;
+    --primary-foreground: 38 55% 96%;
+
+    --secondary: 0 25% 75%;
+    --secondary-foreground: 25 40% 12%;
+
+    --muted: 38 20% 85%;
+    --muted-foreground: 25 20% 40%;
+
+    --accent: 0 25% 80%;
+    --accent-foreground: 43 65% 35%;
+
+    --border: 38 20% 78%;
+    --input: 38 20% 82%;
+    --ring: 43 65% 42%;
+
+    --deep-brown: 38 40% 92%;
+    --maroon: 0 25% 75%;
+    --gold: 43 65% 42%;
+    --gold-glow: 43 80% 50%;
+  }
 }
 
 @layer base {
@@ -66,6 +99,7 @@
     background-image: 
       radial-gradient(ellipse at 20% 50%, hsl(var(--maroon) / 0.15) 0%, transparent 50%),
       radial-gradient(ellipse at 80% 20%, hsl(var(--gold) / 0.05) 0%, transparent 40%);
+    transition: background-color 0.5s ease, color 0.5s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -146,6 +180,81 @@
 @keyframes flicker {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
+}
+
+/* Sorting Hat wobble */
+@keyframes sorting-wobble {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(-15deg); }
+  30% { transform: rotate(12deg); }
+  45% { transform: rotate(-10deg); }
+  60% { transform: rotate(8deg); }
+  75% { transform: rotate(-5deg); }
+  90% { transform: rotate(3deg); }
+}
+
+.animate-sorting-wobble {
+  animation: sorting-wobble 2s ease-in-out;
+}
+
+/* Spell cast wand animation */
+@keyframes spell-cast {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(-30deg) scale(1.1); }
+  50% { transform: rotate(15deg) scale(1.2); }
+  75% { transform: rotate(-5deg) scale(1.05); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+
+.animate-spell-cast {
+  animation: spell-cast 0.8s ease-out;
+}
+
+/* Sparkle particles */
+@keyframes sparkle-particle {
+  0% { opacity: 0; transform: scale(0); }
+  30% { opacity: 1; transform: scale(1.5); }
+  100% { opacity: 0; transform: scale(0) translateY(-30px); }
+}
+
+.animate-sparkle-particle {
+  animation: sparkle-particle 1.5s ease-out forwards;
+}
+
+/* Flicker animation class */
+.animate-flicker {
+  animation: flicker 2s ease-in-out infinite;
+}
+
+/* Gate open animation */
+@keyframes gate-open {
+  0% { transform: perspective(600px) rotateY(0deg); opacity: 1; }
+  100% { transform: perspective(600px) rotateY(-90deg); opacity: 0; }
+}
+
+.animate-gate-open {
+  animation: gate-open 1.5s ease-in forwards;
+}
+
+/* Wall break animation */
+@keyframes wall-break {
+  0% { transform: scale(1); filter: blur(0); }
+  50% { transform: scale(1.05); filter: blur(2px); }
+  100% { transform: scale(0.95); filter: blur(4px); opacity: 0.3; }
+}
+
+.animate-wall-break {
+  animation: wall-break 2s ease-out forwards;
+}
+
+/* Bricks scatter */
+@keyframes bricks-scatter {
+  0% { opacity: 1; }
+  100% { opacity: 0; transform: scale(2); }
+}
+
+.animate-bricks-scatter {
+  animation: bricks-scatter 1.5s ease-out forwards;
 }
 
 /* Scrollbar styling */
