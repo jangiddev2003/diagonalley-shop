@@ -3,13 +3,17 @@ import { useCart } from '@/context/CartContext';
 import { useState } from 'react';
 import { ShoppingCart, Menu, X, Sparkles } from 'lucide-react';
 import wandIcon from '@/assets/wand-icon.png';
+import broomIcon from '@/assets/broom-icon.png';
+import bookIcon from '@/assets/book-icon.png';
+import potionIcon from '@/assets/potion-icon.png';
+import robesIcon from '@/assets/robes-icon.png';
 
 const navItems = [
-  { path: '/wands', label: 'Wands', icon: wandIcon, isImage: true },
-  { path: '/brooms', label: '🧹 Brooms' },
-  { path: '/books', label: '📚 Books' },
-  { path: '/potions', label: '🧪 Potions' },
-  { path: '/robes', label: '🧙 Robes' },
+  { path: '/wands', label: 'Wands', icon: wandIcon },
+  { path: '/brooms', label: 'Brooms', icon: broomIcon },
+  { path: '/books', label: 'Books', icon: bookIcon },
+  { path: '/potions', label: 'Potions', icon: potionIcon },
+  { path: '/robes', label: 'Robes', icon: robesIcon },
 ];
 
 const Navbar = () => {
@@ -23,11 +27,10 @@ const Navbar = () => {
         <Link to="/" className="flex items-center gap-2 group">
           <Sparkles className="h-6 w-6 text-primary transition-transform group-hover:rotate-12" />
           <span className="font-display text-xl font-bold text-primary text-glow">
-            Diagonally.com
+            Diagonally
           </span>
         </Link>
 
-        {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-1">
           {navItems.map(item => (
             <Link
@@ -37,9 +40,7 @@ const Navbar = () => {
                 location.pathname === item.path ? 'bg-muted text-primary glow-gold' : 'text-foreground'
               }`}
             >
-              {'isImage' in item && item.isImage ? (
-                <img src={item.icon} alt="" className="h-4 w-4 object-contain" />
-              ) : null}
+              <img src={item.icon} alt="" className="h-4 w-4 object-contain" />
               {item.label}
             </Link>
           ))}
@@ -67,7 +68,6 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile Nav */}
       {mobileOpen && (
         <div className="md:hidden border-t border-border bg-background px-4 pb-4 animate-fade-in">
           {navItems.map(item => (
@@ -79,9 +79,7 @@ const Navbar = () => {
                 location.pathname === item.path ? 'text-primary bg-muted' : 'text-foreground'
               }`}
             >
-              {'isImage' in item && item.isImage ? (
-                <img src={item.icon} alt="" className="h-4 w-4 object-contain" />
-              ) : null}
+              <img src={item.icon} alt="" className="h-4 w-4 object-contain" />
               {item.label}
             </Link>
           ))}

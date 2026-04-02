@@ -7,13 +7,17 @@ import booksImg from '@/assets/books-category.jpg';
 import potionsImg from '@/assets/potions-category.jpg';
 import robesImg from '@/assets/robes-category.jpg';
 import wandIcon from '@/assets/wand-icon.png';
+import broomIcon from '@/assets/broom-icon.png';
+import bookIcon from '@/assets/book-icon.png';
+import potionIcon from '@/assets/potion-icon.png';
+import robesIcon from '@/assets/robes-icon.png';
 
 const categories = [
   { path: '/wands', label: 'Wands', subtitle: "Ollivander's Finest", image: wandsImg, icon: wandIcon },
-  { path: '/brooms', label: '🧹 Brooms', subtitle: 'Racing & Travel', image: broomsImg },
-  { path: '/books', label: '📚 Spell Books', subtitle: 'Ancient Knowledge', image: booksImg },
-  { path: '/potions', label: '🧪 Potions', subtitle: 'Elixirs & Draughts', image: potionsImg },
-  { path: '/robes', label: '🧙 Robes', subtitle: 'Wizarding Attire', image: robesImg },
+  { path: '/brooms', label: 'Brooms', subtitle: 'Racing & Travel', image: broomsImg, icon: broomIcon },
+  { path: '/books', label: 'Spell Books', subtitle: 'Ancient Knowledge', image: booksImg, icon: bookIcon },
+  { path: '/potions', label: 'Potions', subtitle: 'Elixirs & Draughts', image: potionsImg, icon: potionIcon },
+  { path: '/robes', label: 'Robes', subtitle: 'Wizarding Attire', image: robesImg, icon: robesIcon },
 ];
 
 const Index = () => (
@@ -27,7 +31,7 @@ const Index = () => (
           <Sparkles className="h-8 w-8 text-primary animate-float" />
         </div>
         <h1 className="font-display text-4xl md:text-6xl font-bold text-foreground text-glow mb-4">
-          Welcome to Diagonally.com
+          Welcome to Diagonally
         </h1>
         <p className="font-medieval text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-8">
           Your gateway to the finest magical wares in the wizarding world
@@ -69,7 +73,7 @@ const Index = () => (
             </div>
             <div className="absolute bottom-0 left-0 right-0 p-5">
               <h3 className="font-display text-xl font-bold text-foreground group-hover:text-primary transition-colors flex items-center gap-2">
-                {'icon' in cat && cat.icon ? <img src={cat.icon} alt="" className="h-5 w-5 object-contain" /> : null}
+                <img src={cat.icon} alt="" className="h-5 w-5 object-contain" />
                 {cat.label}
               </h3>
               <p className="text-sm text-muted-foreground font-body">{cat.subtitle}</p>

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
 import { useNavigate } from 'react-router-dom';
 import { Sparkles, X } from 'lucide-react';
+import FeedbackForm from '@/components/FeedbackForm';
 
 const CheckoutPage = () => {
   const { totalPrice, totalItems, clearCart } = useCart();
@@ -77,7 +78,7 @@ const CheckoutPage = () => {
       {/* Thank You Modal */}
       {showThankYou && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4">
-          <div className="relative max-w-md w-full rounded-2xl border border-primary/50 bg-card p-8 text-center animate-fade-in glow-gold-intense">
+          <div className="relative max-w-md w-full rounded-2xl border border-primary/50 bg-card p-8 text-center animate-fade-in glow-gold-intense overflow-y-auto max-h-[90vh]">
             <button
               onClick={() => { setShowThankYou(false); navigate('/'); }}
               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground"
@@ -103,13 +104,17 @@ const CheckoutPage = () => {
               <p className="font-body text-sm text-muted-foreground">
                 Your magical items have been dispatched via Owl Post. 
                 Expect delivery within 3-5 wizarding business days.
-                An owl will arrive at your window with your package!
               </p>
 
               <div className="pt-4 flex justify-center gap-3">
                 <span className="text-2xl animate-sparkle" style={{ animationDelay: '0.2s' }}>⚡</span>
                 <span className="text-2xl animate-sparkle" style={{ animationDelay: '0.6s' }}>✨</span>
                 <span className="text-2xl animate-sparkle" style={{ animationDelay: '1s' }}>🪄</span>
+              </div>
+
+              {/* Feedback Section */}
+              <div className="pt-4 border-t border-border/50">
+                <FeedbackForm />
               </div>
 
               <button

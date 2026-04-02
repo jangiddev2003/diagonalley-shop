@@ -1,9 +1,8 @@
 import { useState, useMemo } from 'react';
 import { Category, categoryTitles, allProducts } from '@/data/products';
 import ProductCard from '@/components/ProductCard';
+import ProductViewer from '@/components/ProductViewer';
 import SearchBar from '@/components/SearchBar';
-import WandViewer from '@/components/WandViewer';
-import { wands } from '@/data/products';
 
 interface ShopPageProps {
   category: Category;
@@ -22,6 +21,11 @@ const ShopPage = ({ category }: ShopPageProps) => {
       );
   }, [category, search]);
 
+  // Show featured items (rare/legendary) in the 360° viewer
+  const featuredProducts = useMemo(() => {
+    return products.filter(p => p.rarity === 'rare' || p.rarity === 'legendary');
+  }, [products]);
+
   return (
     <div className="min-h-screen container mx-auto px-4 py-10">
       <div className="text-center mb-10 animate-fade-in">
@@ -35,15 +39,15 @@ const ShopPage = ({ category }: ShopPageProps) => {
         <SearchBar value={search} onChange={setSearch} placeholder={`Search ${category}...`} />
       </div>
 
-      {/* Special wand viewer for wands page */}
-      {category === 'wands' && (
+      {/* 360° Interactive Viewer for featured items */}
+      {featuredProducts.length > 0 && (
         <div className="mb-12">
           <h2 className="font-display text-xl font-bold text-foreground mb-4 text-center">
-            ✨ Interactive Wand Viewer — Drag to Rotate
+            ✨ Interactive 360° Viewer — Drag to Rotate
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {wands.filter(w => w.rarity === 'rare').map(w => (
-              <WandViewer key={w.id} wand={w} />
+            {featuredProducts.map(p => (
+              <ProductViewer key={p.id} product={p} />
             ))}
           </div>
         </div>

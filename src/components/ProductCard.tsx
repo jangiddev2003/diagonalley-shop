@@ -3,8 +3,19 @@ import { useCart } from '@/context/CartContext';
 import { ShoppingCart, Star } from 'lucide-react';
 import { toast } from 'sonner';
 import wandIcon from '@/assets/wand-icon.png';
+import broomIcon from '@/assets/broom-icon.png';
+import bookIcon from '@/assets/book-icon.png';
+import potionIcon from '@/assets/potion-icon.png';
+import robesIcon from '@/assets/robes-icon.png';
 
-// Generate a deterministic gradient based on product id
+const categoryFallbackIcons: Record<string, string> = {
+  wands: wandIcon,
+  brooms: broomIcon,
+  books: bookIcon,
+  potions: potionIcon,
+  robes: robesIcon,
+};
+
 const getCardGradient = (id: string) => {
   const num = id.charCodeAt(1) || 0;
   const hue1 = 25 + (num * 7) % 20;
@@ -28,31 +39,26 @@ const ProductCard = ({ product }: { product: Product }) => {
     });
   };
 
+  const fallbackIcon = categoryFallbackIcons[product.category] || wandIcon;
+
   return (
     <div
       className="group relative overflow-hidden rounded-lg border border-border transition-all duration-300 hover:border-primary/50 hover:glow-gold"
       style={{ background: getCardGradient(product.id) }}
     >
-      {/* Image placeholder area */}
       <div className="relative h-48 overflow-hidden bg-muted/30 flex items-center justify-center">
         {product.image ? (
           <img src={product.image} alt={product.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
         ) : (
-          <div className="text-6xl opacity-60 group-hover:scale-110 transition-transform duration-500">
-            {product.category === 'wands' && <img src={wandIcon} alt="wand" className="h-20 w-20 object-contain" />}
-            {product.category === 'brooms' && '🧹'}
-            {product.category === 'books' && '📚'}
-            {product.category === 'potions' && '🧪'}
-            {product.category === 'robes' && '🧙'}
+          <div className="group-hover:scale-110 transition-transform duration-500">
+            <img src={fallbackIcon} alt={product.category} className="h-20 w-20 object-contain opacity-70" />
           </div>
         )}
-        {/* Shimmer overlay on hover */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/10 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shimmer transition-opacity" 
           style={{ backgroundSize: '200% 100%' }}
         />
       </div>
 
-      {/* Rarity badge */}
       {product.rarity && product.rarity !== 'common' && (
         <div className="absolute top-3 right-3">
           <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-display font-bold ${rarityColors[product.rarity]}`}>
@@ -70,7 +76,6 @@ const ProductCard = ({ product }: { product: Product }) => {
           {product.description}
         </p>
 
-        {/* Details */}
         {product.details && (
           <div className="flex flex-wrap gap-1">
             {Object.entries(product.details).slice(0, 2).map(([key, val]) => (
