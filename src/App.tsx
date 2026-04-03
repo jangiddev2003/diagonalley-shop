@@ -6,6 +6,7 @@ import { CartProvider } from "@/context/CartContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SparkleEffect from "@/components/SparkleEffect";
+import FlyingCar from "@/components/FlyingCar";
 import Index from "./pages/Index";
 import ShopPage from "./pages/ShopPage";
 import AllShopPage from "./pages/AllShopPage";
@@ -14,6 +15,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import SortingHatPage from "./pages/SortingHatPage";
 import SpellCastingPage from "./pages/SpellCastingPage";
 import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import PlatformPage from "./pages/PlatformPage";
 import NotFound from "./pages/NotFound";
 
@@ -26,6 +28,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <SparkleEffect />
+          <FlyingCar />
           <Navbar />
           <Routes>
             <Route path="/" element={<Index />} />
@@ -40,6 +43,7 @@ const App = () => (
             <Route path="/sorting-hat" element={<SortingHatPage />} />
             <Route path="/spells" element={<SpellCastingPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route path="/platform" element={<PlatformPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>

@@ -2,6 +2,7 @@ import { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
 import { ShoppingCart, Star } from 'lucide-react';
 import { toast } from 'sonner';
+import CurrencyDisplay from '@/components/CurrencyDisplay';
 import wandIcon from '@/assets/wand-icon.png';
 import broomIcon from '@/assets/broom-icon.png';
 import bookIcon from '@/assets/book-icon.png';
@@ -87,9 +88,7 @@ const ProductCard = ({ product }: { product: Product }) => {
         )}
 
         <div className="flex items-center justify-between pt-2 border-t border-border/50">
-          <span className="font-display font-bold text-primary text-glow">
-            {product.price} 🪙
-          </span>
+          <CurrencyDisplay galleons={product.price} size="sm" />
           <button
             onClick={handleAdd}
             className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs font-display font-semibold transition-all hover:glow-gold-intense active:scale-95"

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Sparkles, ArrowRight } from 'lucide-react';
+import { CurrencyInfo } from '@/components/CurrencyDisplay';
 import heroBanner from '@/assets/hero-banner.jpg';
 import wandsImg from '@/assets/wands-category.jpg';
 import broomsImg from '@/assets/brooms-category.jpg';
@@ -89,27 +90,11 @@ const Index = () => (
     {/* Currency info */}
     <section className="container mx-auto px-4 pb-16">
       <div className="rounded-xl border border-border bg-card p-8 text-center">
-        <h2 className="font-display text-xl font-bold text-foreground mb-4">
-          🪙 Magical Currency
+        <h2 className="font-display text-xl font-bold text-foreground mb-6">
+          Magical Currency
         </h2>
-        <div className="flex flex-wrap justify-center gap-8 font-body text-sm text-muted-foreground">
-          <div>
-            <span className="block text-2xl mb-1">🥇</span>
-            <span className="font-display text-primary font-bold">1 Galleon</span>
-            <span className="block text-xs">= 17 Sickles</span>
-          </div>
-          <div>
-            <span className="block text-2xl mb-1">🥈</span>
-            <span className="font-display text-foreground font-bold">1 Sickle</span>
-            <span className="block text-xs">= 29 Knuts</span>
-          </div>
-          <div>
-            <span className="block text-2xl mb-1">🥉</span>
-            <span className="font-display text-muted-foreground font-bold">1 Knut</span>
-            <span className="block text-xs">Smallest unit</span>
-          </div>
-        </div>
-        <p className="mt-4 text-xs text-muted-foreground">All prices listed in Galleons</p>
+        <CurrencyInfo />
+        <p className="mt-4 text-xs text-muted-foreground">All prices listed in Galleons • 1 Galleon ≈ £5 ($6.25)</p>
       </div>
     </section>
   </div>

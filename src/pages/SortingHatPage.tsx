@@ -9,6 +9,7 @@ const houses = [
     text: 'text-yellow-300',
     crest: '🦁',
     description: 'Brave at heart, true Gryffindor!',
+    personality: 'You value courage above all else. You are daring, chivalrous, and determined. Your boldness inspires others to follow your lead, even in the darkest of times.',
   },
   {
     name: 'Hufflepuff',
@@ -17,6 +18,7 @@ const houses = [
     text: 'text-yellow-200',
     crest: '🦡',
     description: 'Loyal, patient, and unafraid of toil!',
+    personality: 'You are kind-hearted, dedicated, and fair. Your loyalty knows no bounds, and your patience makes you a trusted companion. Hufflepuffs are the heart of Hogwarts.',
   },
   {
     name: 'Ravenclaw',
@@ -25,6 +27,7 @@ const houses = [
     text: 'text-blue-200',
     crest: '🦅',
     description: 'Wit beyond measure is a treasure!',
+    personality: 'You possess a sharp mind and endless curiosity. You value wisdom, creativity, and learning. Your intellect and originality set you apart from the crowd.',
   },
   {
     name: 'Slytherin',
@@ -33,6 +36,7 @@ const houses = [
     text: 'text-green-200',
     crest: '🐍',
     description: 'Cunning and ambitious, destined for greatness!',
+    personality: 'You are resourceful, ambitious, and determined to succeed. Your cunning mind finds the path others overlook. Great leaders often come from your ranks.',
   },
 ];
 
@@ -95,7 +99,14 @@ const SortingHatPage = () => {
           <h2 className={`font-display text-3xl font-bold ${result.text} mb-2`}>
             {result.name}!
           </h2>
-          <p className="font-medieval text-lg text-foreground/90">{result.description}</p>
+          <p className="font-medieval text-lg text-foreground/90 mb-4">{result.description}</p>
+          
+          {/* Personality insight */}
+          <div className="mt-4 pt-4 border-t border-foreground/20">
+            <p className="font-body text-sm text-foreground/80 italic leading-relaxed">
+              ✨ {result.personality}
+            </p>
+          </div>
         </div>
       )}
     </div>
