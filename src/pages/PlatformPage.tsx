@@ -109,6 +109,22 @@ const PlatformPage = () => {
           </div>
         )}
 
+        {/* On mobile breakpoint, always show posters below the wall button area (before reveal). */}
+        {!revealed && (
+          <div className="mt-6 hidden items-center justify-center gap-4 [@media(max-width:1550px)_and_(max-height:577px)]:flex">
+            <img
+              src={harryGif}
+              alt="Undesirable No. 1 poster"
+              className="h-32 w-auto object-contain"
+            />
+            <img
+              src={blackBg}
+              alt="Hogwarts Express night sky"
+              className="h-32 w-auto object-contain"
+            />
+          </div>
+        )}
+
         {revealed && (
           <div className="rounded-xl border border-primary/50 bg-card p-8 text-center animate-fade-in glow-gold-intense">
             <Sparkles className="h-8 w-8 text-primary mx-auto mb-4 animate-sparkle" />
@@ -138,14 +154,14 @@ const PlatformPage = () => {
       <img
         src={blackBg}
         alt="Hogwarts Express night sky"
-        className="hidden md:block absolute right-[20.5rem] top-1/2 -translate-y-[150%] h-56 w-auto object-contain"
+        className="hidden md:block absolute right-[20.5rem] top-1/2 -translate-y-[150%] h-56 w-auto object-contain [@media(max-width:1550px)_and_(max-height:577px)]:hidden"
       />
 
       {/* Left-side decorative GIF aligned with the section */}
       <img
         src={harryGif}
         alt="Undesirable No. 1 poster"
-        className="hidden md:block absolute left-[20.5rem] top-1/2 -translate-y-[150%] h-56 w-auto object-contain"
+        className="hidden md:block absolute left-[20.5rem] top-1/2 -translate-y-[150%] h-56 w-auto object-contain [@media(max-width:1550px)_and_(max-height:577px)]:hidden"
       />
     </div>
   );
