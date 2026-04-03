@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Sparkles, Search } from 'lucide-react';
 import castingWandImg from '@/assets/casting-wand.png';
+import SpellQuiz from '@/components/SpellQuiz';
 
 const spells = [
   { name: 'Expelliarmus', effect: 'Disarming Charm — forces the opponent to release whatever they are holding.' },
@@ -30,6 +31,8 @@ const SpellCastingPage = () => {
   const [selectedSpell, setSelectedSpell] = useState<typeof spells[0] | null>(null);
   const [isCasting, setIsCasting] = useState(false);
   const [particles, setParticles] = useState<SparkleParticle[]>([]);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizSpell, setQuizSpell] = useState('');
 
   const filtered = spells.filter(s =>
     s.name.toLowerCase().includes(search.toLowerCase())
@@ -39,7 +42,6 @@ const SpellCastingPage = () => {
     setSelectedSpell(spell);
     setIsCasting(true);
 
-    // Generate sparkle particles
     const newParticles: SparkleParticle[] = Array.from({ length: 20 }, (_, i) => ({
       id: Date.now() + i,
       x: Math.random() * 100,
@@ -49,7 +51,12 @@ const SpellCastingPage = () => {
     }));
     setParticles(newParticles);
 
-    setTimeout(() => setIsCasting(false), 2000);
+    setTimeout(() => {
+      setIsCasting(false);
+      // Show quiz after casting
+      setQuizSpell(spell.name);
+      setShowQuiz(true);
+    }, 2000);
   }, []);
 
   useEffect(() => {
@@ -60,7 +67,7 @@ const SpellCastingPage = () => {
   }, [isCasting]);
 
   return (
-    <div className="min-h-screen container mx-auto px-4 py-10 max-w-2xl cursor-[url('/placeholder.svg'),_auto]">
+    <div className="min-h-screen container mx-auto px-4 py-10 max-w-2xl">
       <div className="text-center mb-10 animate-fade-in">
         <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground text-glow mb-2">
           ⚡ Cast a Spell
@@ -78,7 +85,6 @@ const SpellCastingPage = () => {
         />
       </div>
 
-      {/* Spell result */}
       {selectedSpell && (
         <div className="relative mb-8 rounded-xl border border-primary/50 bg-card p-6 text-center glow-gold-intense animate-fade-in overflow-hidden">
           {particles.map(p => (
@@ -101,7 +107,6 @@ const SpellCastingPage = () => {
         </div>
       )}
 
-      {/* Search */}
       <div className="relative max-w-md mx-auto mb-6">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <input
@@ -113,7 +118,6 @@ const SpellCastingPage = () => {
         />
       </div>
 
-      {/* Spell list */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {filtered.map(spell => (
           <button
@@ -135,6 +139,8 @@ const SpellCastingPage = () => {
           </button>
         ))}
       </div>
+
+      {showQuiz && <SpellQuiz spellName={quizSpell} onClose={() => setShowQuiz(false)} />}
     </div>
   );
 };

@@ -1,10 +1,15 @@
 import { useCart } from '@/context/CartContext';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingCart, ArrowLeft } from 'lucide-react';
+import CurrencyDisplay from '@/components/CurrencyDisplay';
+import { galleonsToUSD } from '@/lib/currency';
+import galleonImg from '@/assets/galleon.png';
 
 const CartPage = () => {
   const { items, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
   const navigate = useNavigate();
+  const spellDiscount = Number(sessionStorage.getItem('spell-discount') || '0');
+  const discountedTotal = totalPrice * (1 - spellDiscount / 100);
 
   if (items.length === 0) {
     return (
@@ -28,16 +33,16 @@ const CartPage = () => {
       <div className="space-y-4">
         {items.map(({ product, quantity }) => (
           <div key={product.id} className="flex items-center gap-4 p-4 rounded-lg border border-border bg-card transition-all hover:border-primary/30">
-            <div className="text-3xl flex-shrink-0">
-              {product.category === 'wands' && '🪄'}
-              {product.category === 'brooms' && '🧹'}
-              {product.category === 'books' && '📚'}
-              {product.category === 'potions' && '🧪'}
-              {product.category === 'robes' && '🧙'}
+            <div className="flex-shrink-0">
+              {product.image ? (
+                <img src={product.image} alt={product.name} className="h-12 w-12 object-cover rounded" />
+              ) : (
+                <img src={galleonImg} alt="" className="h-8 w-8 object-contain" />
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-display text-sm font-semibold text-foreground truncate">{product.name}</h3>
-              <p className="text-xs text-muted-foreground">{product.price} 🪙 each</p>
+              <CurrencyDisplay galleons={product.price} size="sm" />
             </div>
             <div className="flex items-center gap-2">
               <button onClick={() => updateQuantity(product.id, quantity - 1)} className="p-1 rounded bg-muted hover:bg-muted/80 text-foreground transition-colors">
@@ -48,9 +53,10 @@ const CartPage = () => {
                 <Plus className="h-3 w-3" />
               </button>
             </div>
-            <span className="font-display font-bold text-primary text-sm w-16 text-right">
-              {product.price * quantity} 🪙
-            </span>
+            <div className="text-right w-20">
+              <CurrencyDisplay galleons={product.price * quantity} size="sm" />
+              <p className="text-[10px] text-muted-foreground">${galleonsToUSD(product.price * quantity)}</p>
+            </div>
             <button onClick={() => removeFromCart(product.id)} className="p-1 text-destructive hover:text-destructive/80 transition-colors">
               <Trash2 className="h-4 w-4" />
             </button>
@@ -64,9 +70,24 @@ const CartPage = () => {
           <span className="font-body text-muted-foreground">Total Items:</span>
           <span className="font-display font-bold text-foreground">{totalItems}</span>
         </div>
+        {spellDiscount > 0 && (
+          <div className="flex justify-between items-center mb-2">
+            <span className="font-body text-muted-foreground">Spell Quiz Discount:</span>
+            <span className="font-display font-bold text-green-400">-{spellDiscount}%</span>
+          </div>
+        )}
+        <div className="flex justify-between items-center mb-2">
+          <span className="font-body text-muted-foreground">Total (Galleons):</span>
+          <span className="font-display text-2xl font-bold text-primary text-glow flex items-center gap-1">
+            {spellDiscount > 0 ? discountedTotal.toFixed(0) : totalPrice}
+            <img src={galleonImg} alt="G" className="h-6 w-6 object-contain" />
+          </span>
+        </div>
         <div className="flex justify-between items-center mb-6">
-          <span className="font-body text-muted-foreground">Total Price:</span>
-          <span className="font-display text-2xl font-bold text-primary text-glow">{totalPrice} 🪙</span>
+          <span className="font-body text-muted-foreground">Total (USD):</span>
+          <span className="font-display text-lg font-bold text-foreground">
+            ${galleonsToUSD(spellDiscount > 0 ? discountedTotal : totalPrice)}
+          </span>
         </div>
         <div className="flex gap-3">
           <Link to="/" className="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg border border-border text-foreground font-display text-sm hover:bg-muted transition-all">

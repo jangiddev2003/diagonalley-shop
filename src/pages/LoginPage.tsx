@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { Lock, User } from 'lucide-react';
 import gateImg from '@/assets/hogwarts-gate.png';
 
@@ -19,7 +19,6 @@ const LoginPage = () => {
       return;
     }
 
-    // Simulate login success
     setIsOpening(true);
     setTimeout(() => {
       localStorage.setItem('diagonally-user', username);
@@ -29,16 +28,13 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden">
-      {/* Stone texture background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card to-background" />
       
-      {/* Candle flicker effects */}
       <div className="absolute top-20 left-10 w-2 h-2 rounded-full bg-primary animate-flicker opacity-60" />
       <div className="absolute top-32 right-16 w-1.5 h-1.5 rounded-full bg-primary animate-flicker opacity-40" style={{ animationDelay: '0.5s' }} />
       <div className="absolute bottom-40 left-1/4 w-2 h-2 rounded-full bg-primary animate-flicker opacity-50" style={{ animationDelay: '1s' }} />
 
       <div className={`relative z-10 w-full max-w-sm transition-all duration-1000 ${isOpening ? 'scale-110 opacity-0' : ''}`}>
-        {/* Gate image */}
         <div className="flex justify-center mb-6">
           <img
             src={gateImg}
@@ -101,9 +97,9 @@ const LoginPage = () => {
             <button type="button" className="text-muted-foreground hover:text-primary transition-colors">
               Forgot your spell?
             </button>
-            <button type="button" className="text-primary hover:text-primary/80 transition-colors font-semibold">
+            <Link to="/register" className="text-primary hover:text-primary/80 transition-colors font-semibold">
               New to Hogwarts? Enroll Here
-            </button>
+            </Link>
           </div>
         </form>
       </div>
