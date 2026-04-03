@@ -25,7 +25,9 @@ const FlyingCar = () => {
         endX: fromLeft ? 120 : -20,
         endY: y + (Math.random() * 20 - 10),
         duration: 6 + Math.random() * 4,
-        flip: !fromLeft,
+        // Flip the sprite so it visually faces the direction it's moving.
+        // (If the PNG is left-facing by default, `flip: fromLeft` makes right-movers face right.)
+        flip: fromLeft,
       };
       setCars(prev => [...prev, car]);
       setTimeout(() => {
