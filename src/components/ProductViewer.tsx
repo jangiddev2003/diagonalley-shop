@@ -1,8 +1,8 @@
-import { useState, useRef, useCallback } from 'react';
 import { Product } from '@/data/products';
 import { useCart } from '@/context/CartContext';
-import { ShoppingCart, RotateCcw } from 'lucide-react';
+import { ShoppingCart, RotateCcw, Coins } from 'lucide-react';
 import { toast } from 'sonner';
+import { ThreeDViewer } from './ThreeDModel';
 import wandIcon from '@/assets/wand-icon.png';
 import broomIcon from '@/assets/broom-icon.png';
 import bookIcon from '@/assets/book-icon.png';
@@ -18,38 +18,7 @@ const categoryFallbackIcons: Record<string, string> = {
 };
 
 const ProductViewer = ({ product }: { product: Product }) => {
-  const [rotation, setRotation] = useState(0);
-  const isDragging = useRef(false);
-  const lastX = useRef(0);
   const { addToCart } = useCart();
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    isDragging.current = true;
-    lastX.current = e.clientX;
-  }, []);
-
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isDragging.current) return;
-    const delta = e.clientX - lastX.current;
-    setRotation(prev => prev + delta * 0.5);
-    lastX.current = e.clientX;
-  }, []);
-
-  const handleMouseUp = useCallback(() => {
-    isDragging.current = false;
-  }, []);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    isDragging.current = true;
-    lastX.current = e.touches[0].clientX;
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isDragging.current) return;
-    const delta = e.touches[0].clientX - lastX.current;
-    setRotation(prev => prev + delta * 0.5);
-    lastX.current = e.touches[0].clientX;
-  }, []);
 
   const handleAdd = () => {
     addToCart(product);
@@ -60,28 +29,20 @@ const ProductViewer = ({ product }: { product: Product }) => {
 
   return (
     <div className="rounded-lg border border-border bg-card p-6 space-y-4 transition-all hover:border-primary/50 hover:glow-gold">
-      <div
-        className="relative h-36 flex items-center justify-center cursor-grab active:cursor-grabbing select-none overflow-hidden rounded-md bg-muted/20"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleMouseUp}
-      >
-        <div
-          className="transition-none"
-          style={{ transform: `perspective(400px) rotateY(${rotation}deg)` }}
-        >
-          {product.image ? (
-            <img src={product.image} alt={product.name} className="h-28 w-auto object-contain" />
-          ) : (
-            <img src={fallbackIcon} alt={product.category} className="h-20 w-20 object-contain" />
-          )}
-        </div>
-        <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[10px] text-muted-foreground">
-          <RotateCcw className="h-3 w-3" /> Drag to rotate
+      <div className="relative h-48 flex items-center justify-center select-none overflow-hidden rounded-md bg-muted/20">
+        {product.category === 'wands' ? (
+          <ThreeDViewer productName={product.name} />
+        ) : (
+          <div className="transition-none">
+            {product.image ? (
+              <img src={product.image} alt={product.name} className="h-28 w-auto object-contain" />
+            ) : (
+              <img src={fallbackIcon} alt={product.category} className="h-20 w-20 object-contain" />
+            )}
+          </div>
+        )}
+        <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[10px] text-muted-foreground pointer-events-none">
+          <RotateCcw className="h-3 w-3" /> {product.category === 'wands' ? 'Drag to rotate' : 'View'}
         </div>
       </div>
       <div>
@@ -104,7 +65,9 @@ const ProductViewer = ({ product }: { product: Product }) => {
         )}
       </div>
       <div className="flex items-center justify-between">
-        <span className="font-display font-bold text-primary text-glow">{product.price} 🪙</span>
+        <span className="font-display font-bold text-primary text-glow flex items-center gap-1">
+          {product.price} <Coins className="h-4 w-4" />
+        </span>
         <button onClick={handleAdd} className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs font-display font-semibold hover:glow-gold-intense active:scale-95 transition-all">
           <ShoppingCart className="h-3 w-3" /> Add
         </button>

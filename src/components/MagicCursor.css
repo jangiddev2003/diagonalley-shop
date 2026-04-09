@@ -1,0 +1,57 @@
+/* 
+  Magic Cursor Styles
+  This CSS file controls how our custom mouse cursor looks and behaves.
+*/
+
+/* 
+  1. HIDING THE DEFAULT CURSOR & ADDING OUR CUSTOM SVG
+  When the JS runs, it adds the 'magic-cursor-active' class to the body.
+  We target any element (*) inside it to change the cursor globally.
+*/
+body.magic-cursor-active,
+body.magic-cursor-active *:not(.magic-hover-target):not(.magic-hover-target *) {
+  /* 
+    We use 'cursor: url(...)' to load a custom SVG image that acts as the hardware cursor.
+    This guarantees 0 lag since the Operating System renders it instead of the browser.
+    The data:image/svg+xml code is our glowing golden arrow!
+  */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3Cfilter id='glow'%3E%3CfeGaussianBlur stdDeviation='1.5' result='coloredBlur'/%3E%3CfeMerge%3E%3CfeMergeNode in='coloredBlur'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M3 3 L21 10 L13 13 L8 22 Z' fill='%23d4af37' stroke='%23ffffff' stroke-width='1' filter='url(%23glow)'/%3E%3C/svg%3E") 3 3, auto !important;
+}
+
+/* 
+  2. HOVER EFFECT CURSOR
+  When you hover over a button or link, our JS adds the 'magic-hover-target' class.
+  This CSS rule instantly swaps the cursor out for a bigger, brighter version.
+*/
+body.magic-cursor-active .magic-hover-target,
+body.magic-cursor-active .magic-hover-target * {
+  /* Hover State Cursor: Larger, brighter, slightly shifted */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cdefs%3E%3Cfilter id='glow-hover'%3E%3CfeGaussianBlur stdDeviation='2.5' result='coloredBlur'/%3E%3CfeMerge%3E%3CfeMergeNode in='coloredBlur'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M4 4 L24 11 L15 14 L9 24 Z' fill='%23ffffff' stroke='%23d4af37' stroke-width='1.5' filter='url(%23glow-hover)'/%3E%3C/svg%3E") 4 4, pointer !important;
+}
+
+/* 
+  3. THE PARTICLE CANVAS
+  We use an HTML <canvas> element to draw the sparks. It must stay behind everything
+  so you don't accidentally click on the canvas instead of real website buttons.
+*/
+#magic-cursor-canvas {
+  position: fixed;   /* Stays stuck to your screen even when scrolling */
+  top: 0;
+  left: 0;
+  width: 100vw;      /* Fills the whole screen width */
+  height: 100vh;     /* Fills the whole screen height */
+  pointer-events: none; /* VERY IMPORTANT: makes clicks go 'through' the canvas to the buttons underneath */
+  z-index: 999998;   /* Keeps it floating high above most other elements */
+}
+
+/* 
+  4. HIGHLIGHTING HOVERED BUTTONS
+  When you point at an interactive element, we softly enlarge it and add a golden shadow.
+  The !important tag guarantees this overrides other styles smoothly.
+*/
+.magic-hover-target {
+  transform: scale(1.02) !important; /* Zooms in exactly 2% larger */
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4) !important; /* Adds a golden glow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important; /* Animates the zooming over 0.3 seconds */
+  z-index: 10;
+}
