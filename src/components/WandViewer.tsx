@@ -1,22 +1,41 @@
-// We import React's useState if we need local state (not currently used but often helpful)
-import { useState } from 'react';
+// 1. IMPORTS
+import { useState, useRef, useEffect } from 'react';
 // Import the 'Product' type so TypeScript knows the exact structure of a wand
 import { Product } from '@/data/products';
 // We use a custom hook 'useCart' which provides access to our shopping cart logic
 import { useCart } from '@/context/CartContext';
 // Import some helpful icons from the 'lucide-react' library
-import { ShoppingCart, RotateCcw, Coins } from 'lucide-react';
+import { ShoppingCart, RotateCcw } from 'lucide-react';
+import galleonImg from '@/assets/galleon.png';
 // Import 'toast' for showing small pop-up notifications
 import { toast } from 'sonner';
 // Import our custom 3D viewer component to render the wands
 import { ThreeDViewer } from './ThreeDModel';
 
+// 2. MAIN COMPONENT
 // This is the WandViewer component. It expects to receive a 'wand' object as a prop.
 const WandViewer = ({ wand }: { wand: Product }) => {
-  // Destructure the 'addToCart' function from our global cart context
+  // STATE: Destructure the 'addToCart' function from our global cart context
   const { addToCart } = useCart();
+  const observerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  // This function is triggered when a user clicks the Add to Cart button
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { rootMargin: "200px" } // Load slightly before coming into view
+    );
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  // LOGIC: This function is triggered when a user clicks the Add to Cart button
   const handleAdd = () => {
     // Add the specific wand to the global cart state
     addToCart(wand);
@@ -32,9 +51,15 @@ const WandViewer = ({ wand }: { wand: Product }) => {
           This section holds the 3D model.
           It has a fixed height, hidden overflow, and a subtle background. 
       */}
-      <div className="relative h-48 flex items-center justify-center select-none overflow-hidden rounded-md bg-muted/20">
-        {/* We pass the wand's name to our 3D viewer so it knows which wand to render */}
-        <ThreeDViewer productName={wand.name} />
+      <div ref={observerRef} className="relative h-48 flex items-center justify-center select-none overflow-hidden rounded-md bg-muted/20">
+        {/* We pass the wand's name to our 3D viewer so it knows which wand to render, but only load if visible to save WebGL contexts */}
+        {isVisible ? (
+          <ThreeDViewer productName={wand.name} />
+        ) : (
+          <div className="flex items-center justify-center h-full w-full text-muted-foreground/50 text-xs font-display animate-pulse">
+            Summoning Wand...
+          </div>
+        )}
         
         {/* A small overlay icon and text hinting that the model can be rotated */}
         <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[10px] text-muted-foreground pointer-events-none">
@@ -69,7 +94,7 @@ const WandViewer = ({ wand }: { wand: Product }) => {
       <div className="flex items-center justify-between">
         {/* Show the price alongside a coin icon */}
         <span className="font-display font-bold text-primary text-glow flex items-center gap-1">
-          {wand.price} <Coins className="h-4 w-4" />
+          {wand.price} <img src={galleonImg} alt="Galleons" className="h-4 w-4 object-contain" />
         </span>
         
         {/* The button that triggers the 'handleAdd' function when clicked */}

@@ -1,13 +1,15 @@
+// 1. IMPORTS
 import React, { useEffect } from "react";
 import "./MagicCursor.css";
 
+// 2. CORE LOGIC
 // This is the core logic function that makes the magic cursor do its thing.
 export const initMagicCursor = () => {
-  // 1. ENABLE CSS CURSOR
+  // A - ENABLE CSS CURSOR
   // Adds a special class to the website's <body> tag so our MagicCursor.css knows to activate.
   document.body.classList.add("magic-cursor-active");
 
-  // 2. CREATE A TRANSPARENT CANVAS
+  // B - CREATE A TRANSPARENT CANVAS
   // A <canvas> is like a transparent painting board we use to draw the sparks.
   const canvas = document.createElement("canvas");
   canvas.id = "magic-cursor-canvas";
@@ -17,7 +19,7 @@ export const initMagicCursor = () => {
   // Gets a 'brush' (context) from the canvas so we can draw 2D shapes onto it.
   const ctx = canvas.getContext("2d");
 
-  // 3. SETTING IT TO FULL SCREEN
+  // C - SETTING IT TO FULL SCREEN
   let width = window.innerWidth;
   let height = window.innerHeight;
   canvas.width = width;
@@ -36,7 +38,7 @@ export const initMagicCursor = () => {
   let mouseX = width / 2;
   let mouseY = height / 2;
 
-  // 4. TRACKING MOUSE MOVEMENT
+  // D - TRACKING MOUSE MOVEMENT
   const onMouseMove = (e: MouseEvent) => {
     // Remember where the mouse WAS right before now
     const prevX = mouseX;
@@ -61,7 +63,7 @@ export const initMagicCursor = () => {
   // Every time the mouse fires a "moved" event, run our logic!
   window.addEventListener("mousemove", onMouseMove);
 
-  // 5. ADDING GLOW EFFECTS PROPERLY
+  // E - ADDING GLOW EFFECTS PROPERLY
   // This is a big list telling JS exactly what types of items are "clickable" on the site.
   // It includes links (a), buttons (button), input fields, dropdowns, etc.
   const interactiveSelector = "a, button, input, select, textarea, [role='button'], .cursor-pointer, .interactive, .hover\\:scale-105";
@@ -91,7 +93,7 @@ export const initMagicCursor = () => {
   window.addEventListener("mouseover", handleMouseOver);
   window.addEventListener("mouseout", handleMouseOut);
 
-  // 6. THE BLUEPRINT OF A SPARK (PARTICLE)
+  // F - THE BLUEPRINT OF A SPARK (PARTICLE)
   // This class is a template. Every single spark that pops out is an "object" built from this class.
   class Particle {
     x: number;          // Where is it left-to-right
@@ -175,7 +177,7 @@ export const initMagicCursor = () => {
     }
   }, 150);
 
-  // 7. THE RENDER ENGINE LOOP (RUNS 60 TIMES PER SECOND)
+  // G - THE RENDER ENGINE LOOP (RUNS 60 TIMES PER SECOND)
   let animationFrameId: number;
   const loop = () => {
     // Erase the ENTIRE canvas to prepare it for painting everything at its new positions
@@ -198,7 +200,7 @@ export const initMagicCursor = () => {
   // Kickstart our engine
   loop();
 
-  // 8. THE CLEANUP (Like throwing out the trash)
+  // H - THE CLEANUP (Like throwing out the trash)
   // If the React component unmounts, or page changes, we need to turn everything off nicely so we don't leak memory.
   return () => {
     document.body.classList.remove("magic-cursor-active");
@@ -214,10 +216,8 @@ export const initMagicCursor = () => {
   };
 };
 
-/* 
-  9. THE REACT WRAPPER
-  Because we're in a React website, we need to wrap all that plain-vanilla Javascript into a React Component!
-*/
+// 3. THE REACT WRAPPER
+// Because we're in a React website, we need to wrap all that plain-vanilla Javascript into a React Component!
 const MagicCursor: React.FC = () => {
   // 'useEffect' means "Run this little block of code immediately once the component starts rendering"
   useEffect(() => {

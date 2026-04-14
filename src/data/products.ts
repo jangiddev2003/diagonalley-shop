@@ -1,16 +1,25 @@
+// 1. TYPES AND INTERFACES
+// 'type' is a TypeScript feature that lets us define a specific set of allowed values.
+// Here, we restrict 'Category' so it can ONLY be one of these exact string values.
 export type Category = 'wands' | 'brooms' | 'books' | 'potions' | 'robes';
 
+// 'interface' defines the shape of an object. It tells TypeScript exactly what properties a 'Product' must have.
 export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: Category;
-  image: string;
-  rarity?: 'common' | 'rare' | 'legendary';
+  id: string; // A unique identifier
+  name: string; // The name of the product
+  description: string; // A short description
+  price: number; // The cost in galleons
+  category: Category; // Must match one of the categories defined above
+  image: string; // The URL or path to the product's image
+  // The '?' means this property is optional. A product doesn't HAVE to have a rarity or details.
+  rarity?: 'common' | 'rare' | 'legendary'; 
+  // 'Record<string, string>' means this is an object where both the keys and values are strings.
+  // For example: { color: "red", size: "large" }
   details?: Record<string, string>;
 }
 
+// 2. IMAGE IMPORTS
+// We import images directly from our assets folder. Vite will turn these into correct URLs when building the app.
 // Wand images
 import harryWand from '@/assets/wands/harry-potter-wand.jpg';
 import hermioneWand from '@/assets/wands/hermione-wand.jpg';
@@ -34,7 +43,8 @@ import polyjuiceImg from '@/assets/potions/polyjuice.jpg';
 import gryffindorImg from '@/assets/robes/gryffindor.jpg';
 import invisibilityImg from '@/assets/robes/invisibility-cloak.jpg';
 
-// Category icons
+// 3. CATEGORY ICONS
+// We export these icons so other files (like the Navbar) can import them directly from here.
 export { default as wandIcon } from '@/assets/wand-icon.png';
 export { default as broomIcon } from '@/assets/broom-icon.png';
 export { default as bookIcon } from '@/assets/book-icon.png';
@@ -49,8 +59,9 @@ export const categoryIcons: Record<Category, string> = {
   robes: '',
 };
 
-// We'll set these after imports are resolved — use the direct imports in components
-
+// 4. PRODUCT DATA ARRAYS
+// We create an array of Product objects for each category.
+// Placing ': Product[]' ensures that every item in the array exactly matches the Product interface rules.
 export const wands: Product[] = [
   { id: 'w-harry', name: "Harry Potter's Wand", description: 'Holly wood with a phoenix feather core. The brother wand to Voldemort\'s — chose Harry in Ollivander\'s shop.', price: 20, category: 'wands', image: harryWand, rarity: 'legendary', details: { core: 'Phoenix Feather', wood: 'Holly', length: '11"', owner: 'Harry Potter' } },
   { id: 'w-hermione', name: "Hermione Granger's Wand", description: 'Vine wood with a dragon heartstring core. Perfect for a witch of exceptional brilliance.', price: 18, category: 'wands', image: hermioneWand, rarity: 'legendary', details: { core: 'Dragon Heartstring', wood: 'Vine', length: '10¾"', owner: 'Hermione Granger' } },
@@ -67,7 +78,7 @@ export const wands: Product[] = [
 ];
 
 export const brooms: Product[] = [
-  { id: 'b1', name: 'Nimbus 2000', description: 'The fastest broom of its time, featuring a sleek mahogany handle and perfectly aligned tail twigs.', price: 35, category: 'brooms', image: nimbus2000Img, details: { speed: '100 mph', make: 'Nimbus Racing Broom Company', year: '1991' } },
+  { id: 'b1', name: 'Nimbus 2000', description: 'The fastest broom of its time, featuring a sleek mahogany handle and perfectly aligned tail twigs.', price: 35, category: 'brooms', image: nimbus2000Img, rarity: 'rare', details: { speed: '100 mph', make: 'Nimbus Racing Broom Company', year: '1991' } },
   { id: 'b2', name: 'Firebolt', description: 'The supreme racing broom. Streamline ash handle with diamond-hard polish and aerodynamic birch twigs.', price: 75, category: 'brooms', image: fireboltImg, rarity: 'legendary', details: { speed: '150 mph', make: 'Randolph Spudmore', year: '1993' } },
   { id: 'b3', name: 'Comet 260', description: 'A reliable broom known for sharp cornering and steady acceleration. Perfect for young flyers.', price: 18, category: 'brooms', image: '', details: { speed: '70 mph', make: 'Comet Trading Company', year: '1989' } },
   { id: 'b4', name: 'Cleansweep Eleven', description: 'Smooth handling and decent speed for recreational and amateur Quidditch use.', price: 22, category: 'brooms', image: '', details: { speed: '80 mph', make: 'Cleansweep Broom Company', year: '1995' } },
@@ -100,8 +111,11 @@ export const robes: Product[] = [
   { id: 'r6', name: 'Dress Robes (Formal)', description: 'Elegant formal wizarding attire for the Yule Ball. Midnight blue velvet with silver stars.', price: 15, category: 'robes', image: '', details: { type: 'Formal', fabric: 'Enchanted Velvet', colors: 'Midnight Blue & Silver' } },
 ];
 
+// 5. HELPER COLLECTIONS
+// We use the spread operator (...) to combine all our individual product arrays into one giant shopping catalog!
 export const allProducts: Product[] = [...wands, ...brooms, ...books, ...potions, ...robes];
 
+// This object maps the programmatic category keys to human-readable labels for the UI
 export const categoryLabels: Record<Category, string> = {
   wands: 'Wands',
   brooms: 'Brooms',
@@ -110,6 +124,7 @@ export const categoryLabels: Record<Category, string> = {
   robes: 'Robes',
 };
 
+// This object provides titles and subtitles for each category's shop page
 export const categoryTitles: Record<Category, { title: string; subtitle: string }> = {
   wands: { title: "Ollivander's Wand Shop", subtitle: 'The wand chooses the wizard, Mr. Potter' },
   brooms: { title: 'Broomsticks Emporium', subtitle: 'Quality racing brooms for every witch and wizard' },

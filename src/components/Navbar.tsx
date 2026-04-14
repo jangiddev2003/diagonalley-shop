@@ -1,3 +1,4 @@
+// 1. IMPORTS
 // React Router's Link is used instead of standard <a> tags so we can switch pages without reloading the whole website.
 // useLocation lets us know what the current URL is so we can highlight the active button.
 import { Link, useLocation } from 'react-router-dom';
@@ -15,6 +16,7 @@ import bookIcon from '@/assets/book-icon.png';
 import potionIcon from '@/assets/potion-icon.png';
 import robesIcon from '@/assets/robes-icon.png';
 
+// 2. STATIC DATA
 // This is a simple array defining our main navigation links. Creating data arrays like this keeps our HTML clean.
 const navItems = [
   { path: '/wands', label: 'Wands', icon: wandIcon },
@@ -31,16 +33,18 @@ const extraLinks = [
   { path: '/platform', label: '🚂 9¾' },
 ];
 
+// 3. MAIN COMPONENT
 const Navbar = () => {
-  // 1. STATE & HOOKS
-  // Get the total number of items from the shopping cart context.
+  // STATE: Get the total number of items from the shopping cart context.
   const { totalItems } = useCart();
-  // Get the current route/URL from React Router
+  
+  // STATE: Get the current route/URL from React Router
   const location = useLocation();
-  // Keep track of whether the mobile dropdown menu is currently open or closed (true/false)
+  
+  // STATE: Keep track of whether the mobile dropdown menu is currently open or closed (true/false)
   const [mobileOpen, setMobileOpen] = useState(false);
   
-  // Keep track of whether Dark Mode is active.
+  // STATE: Keep track of whether Dark Mode is active.
   // We use a "lazy initializer" (the function inside useState) so it only checks localStorage the FIRST time the component loads.
   const [isDark, setIsDark] = useState(() => {
     // Try to find a saved theme in the browser's storage
@@ -49,7 +53,7 @@ const Navbar = () => {
     return saved ? saved === 'dark' : true;
   });
 
-  // 2. EFFECTS
+  // LOGIC: Theme Toggling Effect
   // useEffect watches the [isDark] variable. Whenever isDark changes, this code block runs!
   useEffect(() => {
     // Toggles a special 'light' CSS class on the very top <html> tag of the website.
