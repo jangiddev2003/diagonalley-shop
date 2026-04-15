@@ -1,0 +1,80 @@
+/* ==========================================================================
+   ✨ MAGIC CURSOR STYLES ✨
+   ==========================================================================
+   This stylesheet handles the custom Harry Potter themed cursor and its 
+   particle trail effects. It works in tandem with the MagicCursor component.
+   ========================================================================== */
+
+/* 
+  1. HIDING THE DEFAULT CURSOR & ADDING OUR CUSTOM SVG
+  When the JS in MagicCursor.tsx runs, it adds the 'magic-cursor-active' class to the body.
+  We target any element (*) inside it to change the cursor globally.
+*/
+body.magic-cursor-active,
+body.magic-cursor-active *:not(.magic-hover-target):not(.magic-hover-target *) {
+  /* 
+    The cursor property below replaces the default system mouse pointer.
+    We use 'url(...)' to load a custom SVG image (a glowing golden arrow).
+    The '3 3' sets the hotspot coordinate (where the actual click registers) to x:3, y:3.
+    'auto' is a fallback in case the SVG fails to load.
+    The '!important' flag ensures this overrides any other cursor styles on the site.
+  */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cdefs%3E%3Cfilter id='glow'%3E%3CfeGaussianBlur stdDeviation='1.5' result='coloredBlur'/%3E%3CfeMerge%3E%3CfeMergeNode in='coloredBlur'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M3 3 L21 10 L13 13 L8 22 Z' fill='%23d4af37' stroke='%23ffffff' stroke-width='1' filter='url(%23glow)'/%3E%3C/svg%3E") 3 3, auto !important;
+}
+
+/* 
+  2. HOVER EFFECT CURSOR
+  When the user hovers over an interactive element (like a button or link), 
+  our JS adds the 'magic-hover-target' class to that element.
+*/
+body.magic-cursor-active .magic-hover-target,
+body.magic-cursor-active .magic-hover-target * {
+  /* 
+    This swaps the cursor for a slightly larger, brighter version.
+    The hotspot is moved to '4 4' to match the new dimensions.
+    'pointer' is the fallback (the standard clicking hand).
+  */
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cdefs%3E%3Cfilter id='glow-hover'%3E%3CfeGaussianBlur stdDeviation='2.5' result='coloredBlur'/%3E%3CfeMerge%3E%3CfeMergeNode in='coloredBlur'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Cpath d='M4 4 L24 11 L15 14 L9 24 Z' fill='%23ffffff' stroke='%23d4af37' stroke-width='1.5' filter='url(%23glow-hover)'/%3E%3C/svg%3E") 4 4, pointer !important;
+}
+
+/* 
+  3. THE PARTICLE CANVAS
+  This is the transparent drawing board where the magical sparks are animated.
+*/
+#magic-cursor-canvas {
+  /* 'fixed' keeps the canvas pinned to the screen view, ignoring scroll position */
+  position: fixed;   
+  top: 0;
+  left: 0;
+  
+  /* '100vw' and '100vh' force the canvas to cover exactly 100% of the screen width and height */
+  width: 100vw;      
+  height: 100vh;     
+  
+  /* 
+    'none' makes the canvas invisible to the mouse. 
+    Without this, the canvas would block clicks, and buttons wouldn't work! 
+  */
+  pointer-events: none; 
+  
+  /* Keeps the canvas layered above the page content but below maximum (like modals) */
+  z-index: 999998;   
+}
+
+/* 
+  4. INTERACTIVE ELEMENT HIGHLIGHTING
+  This adds a magical reaction to the element itself when hovered.
+*/
+.magic-hover-target {
+  /* Scales the element up to 102% of its original size */
+  transform: scale(1.02) !important; 
+  
+  /* Applies a glowing golden outline around the element */
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4) !important; 
+  
+  /* Smoothes out the zoom and glow over 0.3 seconds so it's not abrupt */
+  transition: transform 0.3s ease, box-shadow 0.3s ease !important; 
+  
+  /* Brings the hovered element to the front */
+  z-index: 10;
+}

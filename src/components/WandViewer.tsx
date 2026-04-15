@@ -1,92 +1,103 @@
-import { useState, useRef, useCallback } from 'react';
+// 1. IMPORTS
+import { useState, useRef, useEffect } from 'react';
+// Import the 'Product' type so TypeScript knows the exact structure of a wand
 import { Product } from '@/data/products';
+// We use a custom hook 'useCart' which provides access to our shopping cart logic
 import { useCart } from '@/context/CartContext';
+// Import some helpful icons from the 'lucide-react' library
 import { ShoppingCart, RotateCcw } from 'lucide-react';
+import galleonImg from '@/assets/galleon.png';
+// Import 'toast' for showing small pop-up notifications
 import { toast } from 'sonner';
-import wandIcon from '@/assets/wand-icon.png';
+// Import our custom 3D viewer component to render the wands
+import { ThreeDViewer } from './ThreeDModel';
 
+// 2. MAIN COMPONENT
+// This is the WandViewer component. It expects to receive a 'wand' object as a prop.
 const WandViewer = ({ wand }: { wand: Product }) => {
-  const [rotation, setRotation] = useState(0);
-  const isDragging = useRef(false);
-  const lastX = useRef(0);
+  // STATE: Destructure the 'addToCart' function from our global cart context
   const { addToCart } = useCart();
+  const observerRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    isDragging.current = true;
-    lastX.current = e.clientX;
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { rootMargin: "200px" } // Load slightly before coming into view
+    );
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
+    }
+    return () => observer.disconnect();
   }, []);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isDragging.current) return;
-    const delta = e.clientX - lastX.current;
-    setRotation(prev => prev + delta * 0.5);
-    lastX.current = e.clientX;
-  }, []);
-
-  const handleMouseUp = useCallback(() => {
-    isDragging.current = false;
-  }, []);
-
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    isDragging.current = true;
-    lastX.current = e.touches[0].clientX;
-  }, []);
-
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isDragging.current) return;
-    const delta = e.touches[0].clientX - lastX.current;
-    setRotation(prev => prev + delta * 0.5);
-    lastX.current = e.touches[0].clientX;
-  }, []);
-
+  // LOGIC: This function is triggered when a user clicks the Add to Cart button
   const handleAdd = () => {
+    // Add the specific wand to the global cart state
     addToCart(wand);
+    // Show a success message pop-up
     toast.success(`${wand.name} added to cart! ✨`);
   };
 
   return (
+    // The main container card with border, background, and padding
     <div className="rounded-lg border border-border bg-card p-6 space-y-4">
-      <div
-        className="relative h-32 flex items-center justify-center cursor-grab active:cursor-grabbing select-none overflow-hidden rounded-md bg-muted/20"
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleMouseUp}
-      >
-        <div
-          className="transition-none"
-          style={{ transform: `perspective(400px) rotateY(${rotation}deg)` }}
-        >
-          {wand.image ? (
-            <img src={wand.image} alt={wand.name} className="h-24 w-auto object-contain" />
-          ) : (
-            <img src={wandIcon} alt="wand" className="h-20 w-20 object-contain" />
-          )}
-        </div>
-        <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[10px] text-muted-foreground">
+
+      {/* 
+          This section holds the 3D model.
+          It has a fixed height, hidden overflow, and a subtle background. 
+      */}
+      <div ref={observerRef} className="relative h-48 flex items-center justify-center select-none overflow-hidden rounded-md bg-muted/20">
+        {/* We pass the wand's name to our 3D viewer so it knows which wand to render, but only load if visible to save WebGL contexts */}
+        {isVisible ? (
+          <ThreeDViewer productName={wand.name} />
+        ) : (
+          <div className="flex items-center justify-center h-full w-full text-muted-foreground/50 text-xs font-display animate-pulse">
+            Summoning Wand...
+          </div>
+        )}
+
+        {/* A small overlay icon and text hinting that the model can be rotated */}
+        <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[10px] text-muted-foreground pointer-events-none">
           <RotateCcw className="h-3 w-3" /> Drag to rotate
         </div>
       </div>
+
+      {/* Container for the wand's textual information */}
       <div>
+        {/* Display the name of the wand */}
         <h3 className="font-display text-sm font-semibold text-foreground">{wand.name}</h3>
+
+        {/* If the wand has 'details' (like core, wood type), map over them and render pills */}
         {wand.details && (
           <div className="mt-1 flex flex-wrap gap-1">
             {Object.entries(wand.details).map(([k, v]) => (
+              // A unique key is required for mapped items in React
               <span key={k} className="text-[10px] px-2 py-0.5 rounded-full bg-muted/50 text-muted-foreground">
                 {k}: {v}
               </span>
             ))}
           </div>
         )}
+
+        {/* Conditionally render a "Rare" badge if the wand's rarity is exactly 'rare' */}
         {wand.rarity === 'rare' && (
           <span className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full bg-accent text-primary font-display font-bold">⭐ Rare</span>
         )}
       </div>
+
+      {/* Bottom section grouping the price and the add-to-cart button */}
       <div className="flex items-center justify-between">
-        <span className="font-display font-bold text-primary text-glow">{wand.price} 🪙</span>
+        {/* Show the price alongside a coin icon */}
+        <span className="font-display font-bold text-primary text-glow flex items-center gap-1">
+          {wand.price} <img src={galleonImg} alt="Galleons" className="h-4 w-4 object-contain" />
+        </span>
+
+        {/* The button that triggers the 'handleAdd' function when clicked */}
         <button onClick={handleAdd} className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs font-display font-semibold hover:glow-gold-intense active:scale-95 transition-all">
           <ShoppingCart className="h-3 w-3" /> Add
         </button>
@@ -95,4 +106,5 @@ const WandViewer = ({ wand }: { wand: Product }) => {
   );
 };
 
+// Exporting it allows us to render <WandViewer /> anywhere else in the app!
 export default WandViewer;

@@ -1,16 +1,25 @@
+// 1. TYPES AND INTERFACES
+// 'type' is a TypeScript feature that lets us define a specific set of allowed values.
+// Here, we restrict 'Category' so it can ONLY be one of these exact string values.
 export type Category = 'wands' | 'brooms' | 'books' | 'potions' | 'robes';
 
+// 'interface' defines the shape of an object. It tells TypeScript exactly what properties a 'Product' must have.
 export interface Product {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: Category;
-  image: string;
-  rarity?: 'common' | 'rare' | 'legendary';
+  id: string; // A unique identifier
+  name: string; // The name of the product
+  description: string; // A short description
+  price: number; // The cost in galleons
+  category: Category; // Must match one of the categories defined above
+  image: string; // The URL or path to the product's image
+  // The '?' means this property is optional. A product doesn't HAVE to have a rarity or details.
+  rarity?: 'common' | 'rare' | 'legendary'; 
+  // 'Record<string, string>' means this is an object where both the keys and values are strings.
+  // For example: { color: "red", size: "large" }
   details?: Record<string, string>;
 }
 
+// 2. IMAGE IMPORTS
+// We import images directly from our assets folder. Vite will turn these into correct URLs when building the app.
 // Wand images
 import harryWand from '@/assets/wands/harry-potter-wand.jpg';
 import hermioneWand from '@/assets/wands/hermione-wand.jpg';
@@ -34,7 +43,8 @@ import polyjuiceImg from '@/assets/potions/polyjuice.jpg';
 import gryffindorImg from '@/assets/robes/gryffindor.jpg';
 import invisibilityImg from '@/assets/robes/invisibility-cloak.jpg';
 
-// Category icons
+// 3. CATEGORY ICONS
+// We export these icons so other files (like the Navbar) can import them directly from here.
 export { default as wandIcon } from '@/assets/wand-icon.png';
 export { default as broomIcon } from '@/assets/broom-icon.png';
 export { default as bookIcon } from '@/assets/book-icon.png';
@@ -49,25 +59,26 @@ export const categoryIcons: Record<Category, string> = {
   robes: '',
 };
 
-// We'll set these after imports are resolved — use the direct imports in components
-
+// 4. PRODUCT DATA ARRAYS
+// We create an array of Product objects for each category.
+// Placing ': Product[]' ensures that every item in the array exactly matches the Product interface rules.
 export const wands: Product[] = [
   { id: 'w-harry', name: "Harry Potter's Wand", description: 'Holly wood with a phoenix feather core. The brother wand to Voldemort\'s — chose Harry in Ollivander\'s shop.', price: 20, category: 'wands', image: harryWand, rarity: 'legendary', details: { core: 'Phoenix Feather', wood: 'Holly', length: '11"', owner: 'Harry Potter' } },
   { id: 'w-hermione', name: "Hermione Granger's Wand", description: 'Vine wood with a dragon heartstring core. Perfect for a witch of exceptional brilliance.', price: 18, category: 'wands', image: hermioneWand, rarity: 'legendary', details: { core: 'Dragon Heartstring', wood: 'Vine', length: '10¾"', owner: 'Hermione Granger' } },
   { id: 'w-ron', name: "Ron Weasley's Wand", description: 'Willow wood with a unicorn hair core. A loyal wand for a loyal friend.', price: 14, category: 'wands', image: ronWand, rarity: 'rare', details: { core: 'Unicorn Hair', wood: 'Willow', length: '14"', owner: 'Ron Weasley' } },
   { id: 'w-elder', name: 'The Elder Wand', description: 'Elder wood with a thestral tail hair core. The most powerful wand in existence — one of the Deathly Hallows.', price: 50, category: 'wands', image: elderWand, rarity: 'legendary', details: { core: 'Thestral Tail Hair', wood: 'Elder', length: '15"', owner: 'Albus Dumbledore' } },
   { id: 'w-voldemort', name: "Voldemort's Wand", description: 'Yew wood with a phoenix feather core. The twin core to Harry Potter\'s wand.', price: 25, category: 'wands', image: voldemortWand, rarity: 'legendary', details: { core: 'Phoenix Feather', wood: 'Yew', length: '13½"', owner: 'Tom Riddle' } },
-  { id: 'w1', name: 'Unicorn Core & Sycamore Wood', description: 'A wand of great versatility, favoured by those who seek adventure.', price: 7, category: 'wands', image: '', rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Sycamore', length: '11¾"' } },
-  { id: 'w2', name: 'Unicorn Core & Laurel Wood', description: 'A wand that cannot tolerate laziness in its owner.', price: 7, category: 'wands', image: '', rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Laurel', length: '12"' } },
-  { id: 'w3', name: 'Dragon Core & Sycamore Wood', description: 'A powerful combination producing flashy spells.', price: 8, category: 'wands', image: '', rarity: 'common', details: { core: 'Dragon Heartstring', wood: 'Sycamore', length: '10¾"' } },
-  { id: 'w4', name: 'Phoenix Core & Sycamore Wood', description: 'A wand of great range and loyalty.', price: 9, category: 'wands', image: '', rarity: 'common', details: { core: 'Phoenix Feather', wood: 'Sycamore', length: '13"' } },
-  { id: 'w5', name: 'Unicorn Core & Alder Wood', description: 'An unyielding wand best suited for non-verbal spell work.', price: 7, category: 'wands', image: '', rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Alder', length: '11"' } },
-  { id: 'w11', name: 'Phoenix Core & Poplar Wood', description: 'An exceptionally rare pairing of great moral integrity.', price: 15, category: 'wands', image: '', rarity: 'rare', details: { core: 'Phoenix Feather', wood: 'Poplar', length: '13½"' } },
-  { id: 'w12', name: 'Dragon Core & Poplar Wood', description: 'A volatile and powerful rare wand of immense force.', price: 14, category: 'wands', image: '', rarity: 'rare', details: { core: 'Dragon Heartstring', wood: 'Poplar', length: '12¾"' } },
+  { id: 'w1', name: 'Unicorn Core & Sycamore Wood', description: 'A wand of great versatility, favoured by those who seek adventure.', price: 7, category: 'wands', image: harryWand, rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Sycamore', length: '11¾"' } },
+  { id: 'w2', name: 'Unicorn Core & Laurel Wood', description: 'A wand that cannot tolerate laziness in its owner.', price: 7, category: 'wands', image: hermioneWand, rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Laurel', length: '12"' } },
+  { id: 'w3', name: 'Dragon Core & Sycamore Wood', description: 'A powerful combination producing flashy spells.', price: 8, category: 'wands', image: voldemortWand, rarity: 'common', details: { core: 'Dragon Heartstring', wood: 'Sycamore', length: '10¾"' } },
+  { id: 'w4', name: 'Phoenix Core & Sycamore Wood', description: 'A wand of great range and loyalty.', price: 9, category: 'wands', image: ronWand, rarity: 'common', details: { core: 'Phoenix Feather', wood: 'Sycamore', length: '13"' } },
+  { id: 'w5', name: 'Unicorn Core & Alder Wood', description: 'An unyielding wand best suited for non-verbal spell work.', price: 7, category: 'wands', image: elderWand, rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Alder', length: '11"' } },
+  { id: 'w11', name: 'Phoenix Core & Poplar Wood', description: 'An exceptionally rare pairing of great moral integrity.', price: 15, category: 'wands', image: harryWand, rarity: 'rare', details: { core: 'Phoenix Feather', wood: 'Poplar', length: '13½"' } },
+  { id: 'w12', name: 'Dragon Core & Poplar Wood', description: 'A volatile and powerful rare wand of immense force.', price: 14, category: 'wands', image: voldemortWand, rarity: 'rare', details: { core: 'Dragon Heartstring', wood: 'Poplar', length: '12¾"' } },
 ];
 
 export const brooms: Product[] = [
-  { id: 'b1', name: 'Nimbus 2000', description: 'The fastest broom of its time, featuring a sleek mahogany handle and perfectly aligned tail twigs.', price: 35, category: 'brooms', image: nimbus2000Img, details: { speed: '100 mph', make: 'Nimbus Racing Broom Company', year: '1991' } },
+  { id: 'b1', name: 'Nimbus 2000', description: 'The fastest broom of its time, featuring a sleek mahogany handle and perfectly aligned tail twigs.', price: 35, category: 'brooms', image: nimbus2000Img, rarity: 'rare', details: { speed: '100 mph', make: 'Nimbus Racing Broom Company', year: '1991' } },
   { id: 'b2', name: 'Firebolt', description: 'The supreme racing broom. Streamline ash handle with diamond-hard polish and aerodynamic birch twigs.', price: 75, category: 'brooms', image: fireboltImg, rarity: 'legendary', details: { speed: '150 mph', make: 'Randolph Spudmore', year: '1993' } },
   { id: 'b3', name: 'Comet 260', description: 'A reliable broom known for sharp cornering and steady acceleration. Perfect for young flyers.', price: 18, category: 'brooms', image: '', details: { speed: '70 mph', make: 'Comet Trading Company', year: '1989' } },
   { id: 'b4', name: 'Cleansweep Eleven', description: 'Smooth handling and decent speed for recreational and amateur Quidditch use.', price: 22, category: 'brooms', image: '', details: { speed: '80 mph', make: 'Cleansweep Broom Company', year: '1995' } },
@@ -100,8 +111,11 @@ export const robes: Product[] = [
   { id: 'r6', name: 'Dress Robes (Formal)', description: 'Elegant formal wizarding attire for the Yule Ball. Midnight blue velvet with silver stars.', price: 15, category: 'robes', image: '', details: { type: 'Formal', fabric: 'Enchanted Velvet', colors: 'Midnight Blue & Silver' } },
 ];
 
+// 5. HELPER COLLECTIONS
+// We use the spread operator (...) to combine all our individual product arrays into one giant shopping catalog!
 export const allProducts: Product[] = [...wands, ...brooms, ...books, ...potions, ...robes];
 
+// This object maps the programmatic category keys to human-readable labels for the UI
 export const categoryLabels: Record<Category, string> = {
   wands: 'Wands',
   brooms: 'Brooms',
@@ -110,6 +124,7 @@ export const categoryLabels: Record<Category, string> = {
   robes: 'Robes',
 };
 
+// This object provides titles and subtitles for each category's shop page
 export const categoryTitles: Record<Category, { title: string; subtitle: string }> = {
   wands: { title: "Ollivander's Wand Shop", subtitle: 'The wand chooses the wizard, Mr. Potter' },
   brooms: { title: 'Broomsticks Emporium', subtitle: 'Quality racing brooms for every witch and wizard' },

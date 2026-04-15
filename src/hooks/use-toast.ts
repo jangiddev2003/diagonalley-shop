@@ -2,9 +2,16 @@ import * as React from "react";
 
 import type { ToastActionElement, ToastProps } from "@/components/ui/toast";
 
+// ----------------------------------------------------------------------
+// CONFIGURATION
+// ----------------------------------------------------------------------
+// Maximum number of toasts visible at the same time. Older ones get pushed out.
 const TOAST_LIMIT = 1;
+
+// Delay (in milliseconds) before a toast is completely removed from memory after being dismissed.
 const TOAST_REMOVE_DELAY = 1000000;
 
+// Defines the shape of a single Toast object, extending base props with an ID and optional text
 type ToasterToast = ToastProps & {
   id: string;
   title?: React.ReactNode;
@@ -12,6 +19,11 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement;
 };
 
+// ----------------------------------------------------------------------
+// ACTIONS & IDENTIFIERS
+// ----------------------------------------------------------------------
+// These act like "commands" that tell our state management system what to do.
+// Similar to Redux action types.
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
   UPDATE_TOAST: "UPDATE_TOAST",
@@ -21,6 +33,7 @@ const actionTypes = {
 
 let count = 0;
 
+// Generates a unique string ID for every new toast so we can track and update them individually.
 function genId() {
   count = (count + 1) % Number.MAX_SAFE_INTEGER;
   return count.toString();
@@ -28,6 +41,7 @@ function genId() {
 
 type ActionType = typeof actionTypes;
 
+// TypeScript definitions for what data each action expects to receive.
 type Action =
   | {
       type: ActionType["ADD_TOAST"];
@@ -52,6 +66,8 @@ interface State {
 
 const toastTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
+// Schedules a toast to be deleted from the "toasts" array entirely
+// after the dismissal animation finishes (based on TOAST_REMOVE_DELAY).
 const addToRemoveQueue = (toastId: string) => {
   if (toastTimeouts.has(toastId)) {
     return;
@@ -68,25 +84,31 @@ const addToRemoveQueue = (toastId: string) => {
   toastTimeouts.set(toastId, timeout);
 };
 
+// ----------------------------------------------------------------------
+// THE REDUCER (Logic Center)
+// ----------------------------------------------------------------------
+// This function takes the CURRENT state and an ACTION, and returns the NEW state.
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case "ADD_TOAST":
       return {
         ...state,
+        // Add the new toast to the front, and slice off any beyond our TOAST_LIMIT
         toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
       };
 
     case "UPDATE_TOAST":
       return {
         ...state,
+        // Find the toast by ID and update it, leave others exactly as they were
         toasts: state.toasts.map((t) => (t.id === action.toast.id ? { ...t, ...action.toast } : t)),
       };
 
     case "DISMISS_TOAST": {
       const { toastId } = action;
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
+      // When a toast is dismissed (started its exit animation), we queue it up to be 
+      // completely removed from memory shortly after.
       if (toastId) {
         addToRemoveQueue(toastId);
       } else {
@@ -101,7 +123,7 @@ export const reducer = (state: State, action: Action): State => {
           t.id === toastId || toastId === undefined
             ? {
                 ...t,
-                open: false,
+                open: false, // Set open to false to trigger the exit animation
               }
             : t,
         ),
@@ -121,10 +143,17 @@ export const reducer = (state: State, action: Action): State => {
   }
 };
 
+// ----------------------------------------------------------------------
+// GLOBAL STATE & DISPATCH (Custom State Management without Context API)
+// ----------------------------------------------------------------------
+// We store the state OUTSIDE of React so that we can call the `toast()` function 
+// from regular javascript files, not just React components.
 const listeners: Array<(state: State) => void> = [];
 
 let memoryState: State = { toasts: [] };
 
+// Takes an action, runs it through the reducer to get the new state, 
+// then notifies all listening React components that they need to re-render.
 function dispatch(action: Action) {
   memoryState = reducer(memoryState, action);
   listeners.forEach((listener) => {
@@ -134,6 +163,11 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">;
 
+/**
+ * THE MAIN TOAST COMMAND
+ * Call this function anywhere in the user interface to pop up a notification.
+ * Example: toast({ title: "Success", description: "Your item was added!" })
+ */
 function toast({ ...props }: Toast) {
   const id = genId();
 
@@ -156,6 +190,7 @@ function toast({ ...props }: Toast) {
     },
   });
 
+  // Returns tools so the caller can manually update or close the toast they just opened
   return {
     id: id,
     dismiss,
@@ -163,12 +198,20 @@ function toast({ ...props }: Toast) {
   };
 }
 
+/**
+ * Custom React Hook: useToast
+ * 
+ * Used internally by the <Toaster /> component. It connects React to our global memoryState.
+ * When a toast is fired, this hook "hears" it and forces the <Toaster /> to display the new array.
+ */
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState);
 
   React.useEffect(() => {
+    // Subscribe to state changes
     listeners.push(setState);
     return () => {
+       // Unsubscribe when component unmounts
       const index = listeners.indexOf(setState);
       if (index > -1) {
         listeners.splice(index, 1);
