@@ -17,7 +17,7 @@ interface ShopPageProps {
 const ShopPage = ({ category }: ShopPageProps) => {
   // STATE: Keeps track of whatever text the user types into the search bar
   const [search, setSearch] = useState('');
-  
+
   // Look up the correct Title and Subtitle dynamically based on the category prop
   const { title, subtitle } = categoryTitles[category];
 
@@ -35,15 +35,19 @@ const ShopPage = ({ category }: ShopPageProps) => {
       );
   }, [category, search]); // These are the "dependencies"
 
-  // LOGIC: We want to show "legendary" or "rare" items inside the big 3D viewer instead of standard cards.
   const featuredProducts = useMemo(() => {
     return products.filter(p => p.rarity === 'rare' || p.rarity === 'legendary');
+  }, [products]);
+
+  // LOGIC: We want to show only "common" or "uncommon" items in the standard cards section.
+  const standardProducts = useMemo(() => {
+    return products.filter(p => p.rarity !== 'rare' && p.rarity !== 'legendary');
   }, [products]);
 
   return (
     // min-h-screen stretches container to the bottom of the page
     <div className="min-h-screen container mx-auto px-4 py-10">
-      
+
       {/* HEADER SECTION */}
       <div className="text-center mb-10 animate-fade-in">
         <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground text-glow mb-2">
@@ -82,10 +86,10 @@ const ShopPage = ({ category }: ShopPageProps) => {
           <p className="font-medieval text-xl text-muted-foreground">No magical items found... 🔮</p>
           <p className="text-sm text-muted-foreground mt-2">Try a different search term</p>
         </div>
-      ) : (
+      ) : standardProducts.length > 0 && (
         /* Otherwise, grid out all the products that matched the search! */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((p, i) => (
+          {standardProducts.map((p, i) => (
             // The 'animationDelay' inline style makes them fade in one after the other in a staggering effect
             <div key={p.id} className="animate-fade-in" style={{ animationDelay: `${i * 0.05}s` }}>
               <ProductCard product={p} />

@@ -46,7 +46,7 @@ const WandViewer = ({ wand }: { wand: Product }) => {
   return (
     // The main container card with border, background, and padding
     <div className="rounded-lg border border-border bg-card p-6 space-y-4">
-      
+
       {/* 
           This section holds the 3D model.
           It has a fixed height, hidden overflow, and a subtle background. 
@@ -60,43 +60,43 @@ const WandViewer = ({ wand }: { wand: Product }) => {
             Summoning Wand...
           </div>
         )}
-        
+
         {/* A small overlay icon and text hinting that the model can be rotated */}
         <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[10px] text-muted-foreground pointer-events-none">
           <RotateCcw className="h-3 w-3" /> Drag to rotate
         </div>
       </div>
-      
+
       {/* Container for the wand's textual information */}
       <div>
         {/* Display the name of the wand */}
         <h3 className="font-display text-sm font-semibold text-foreground">{wand.name}</h3>
-        
+
         {/* If the wand has 'details' (like core, wood type), map over them and render pills */}
         {wand.details && (
           <div className="mt-1 flex flex-wrap gap-1">
             {Object.entries(wand.details).map(([k, v]) => (
-               // A unique key is required for mapped items in React
+              // A unique key is required for mapped items in React
               <span key={k} className="text-[10px] px-2 py-0.5 rounded-full bg-muted/50 text-muted-foreground">
                 {k}: {v}
               </span>
             ))}
           </div>
         )}
-        
+
         {/* Conditionally render a "Rare" badge if the wand's rarity is exactly 'rare' */}
         {wand.rarity === 'rare' && (
           <span className="inline-block mt-1 text-[10px] px-2 py-0.5 rounded-full bg-accent text-primary font-display font-bold">⭐ Rare</span>
         )}
       </div>
-      
+
       {/* Bottom section grouping the price and the add-to-cart button */}
       <div className="flex items-center justify-between">
         {/* Show the price alongside a coin icon */}
         <span className="font-display font-bold text-primary text-glow flex items-center gap-1">
           {wand.price} <img src={galleonImg} alt="Galleons" className="h-4 w-4 object-contain" />
         </span>
-        
+
         {/* The button that triggers the 'handleAdd' function when clicked */}
         <button onClick={handleAdd} className="flex items-center gap-1 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-xs font-display font-semibold hover:glow-gold-intense active:scale-95 transition-all">
           <ShoppingCart className="h-3 w-3" /> Add
