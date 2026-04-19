@@ -70,7 +70,9 @@ const FlyingCar = () => {
 
   const handleTrainEnd = () => {
     const nextCount = seqState.runCount + 1;
-    const MAX_RUNS = 5 + Math.floor(Math.random() * 2); // 5 to 6 times
+    
+    // MODIFIED: Reduced max rotations to between 1 and 3 times per burst (previously 5 to 6)
+    const MAX_RUNS = Math.floor(Math.random() * 3) + 1;
 
     // Once the train sequence is done, go IDLE.
     setSeqState((prev) => ({
@@ -84,10 +86,14 @@ const FlyingCar = () => {
         startSequence();
       }, 3000); // 3 seconds gap between flights in the same burst so we don't wait forever to witness the train!
     } else {
+      // MODIFIED: Increased the idle gap between entire bursts to 2-3 minutes.
+      // 120,000ms (2 mins) minimum + up to 60,000ms (1 min) randomly.
+      const gapDelayMs = 120000 + Math.floor(Math.random() * 60000);
+      
       timerRef.current = setTimeout(() => {
         setSeqState((prev) => ({ ...prev, runCount: 0 }));
         startSequence();
-      }, 30000); // 30 sec gap between entire bursts
+      }, gapDelayMs);
     }
   };
 

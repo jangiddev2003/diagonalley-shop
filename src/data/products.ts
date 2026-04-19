@@ -34,6 +34,11 @@ import fireboltImg from '@/assets/brooms/firebolt.jpg';
 // Book images
 import advancedPotionsImg from '@/assets/books/advanced-potions.jpg';
 import darkArtsImg from '@/assets/books/dark-arts.jpg';
+// MODIFIED: Imported newly generated dark arts image
+import newDarkArtsImg from '@/assets/books/dark_arts_new.png';
+import standardSpellsImg from '@/assets/books/standard_spells.png';
+import defensiveTheoryImg from '@/assets/books/defensive_theory.png';
+import fantasticBeastsImg from '@/assets/books/fantastic_beasts.png';
 
 // Potion images
 import felixImg from '@/assets/potions/felix-felicis.jpg';
@@ -68,13 +73,9 @@ export const wands: Product[] = [
   { id: 'w-ron', name: "Ron Weasley's Wand", description: 'Willow wood with a unicorn hair core. A loyal wand for a loyal friend.', price: 14, category: 'wands', image: ronWand, rarity: 'rare', details: { core: 'Unicorn Hair', wood: 'Willow', length: '14"', owner: 'Ron Weasley' } },
   { id: 'w-elder', name: 'The Elder Wand', description: 'Elder wood with a thestral tail hair core. The most powerful wand in existence — one of the Deathly Hallows.', price: 50, category: 'wands', image: elderWand, rarity: 'legendary', details: { core: 'Thestral Tail Hair', wood: 'Elder', length: '15"', owner: 'Albus Dumbledore' } },
   { id: 'w-voldemort', name: "Voldemort's Wand", description: 'Yew wood with a phoenix feather core. The twin core to Harry Potter\'s wand.', price: 25, category: 'wands', image: voldemortWand, rarity: 'legendary', details: { core: 'Phoenix Feather', wood: 'Yew', length: '13½"', owner: 'Tom Riddle' } },
-  { id: 'w1', name: 'Unicorn Core & Sycamore Wood', description: 'A wand of great versatility, favoured by those who seek adventure.', price: 7, category: 'wands', image: harryWand, rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Sycamore', length: '11¾"' } },
-  { id: 'w2', name: 'Unicorn Core & Laurel Wood', description: 'A wand that cannot tolerate laziness in its owner.', price: 7, category: 'wands', image: hermioneWand, rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Laurel', length: '12"' } },
-  { id: 'w3', name: 'Dragon Core & Sycamore Wood', description: 'A powerful combination producing flashy spells.', price: 8, category: 'wands', image: voldemortWand, rarity: 'common', details: { core: 'Dragon Heartstring', wood: 'Sycamore', length: '10¾"' } },
-  { id: 'w4', name: 'Phoenix Core & Sycamore Wood', description: 'A wand of great range and loyalty.', price: 9, category: 'wands', image: ronWand, rarity: 'common', details: { core: 'Phoenix Feather', wood: 'Sycamore', length: '13"' } },
-  { id: 'w5', name: 'Unicorn Core & Alder Wood', description: 'An unyielding wand best suited for non-verbal spell work.', price: 7, category: 'wands', image: elderWand, rarity: 'common', details: { core: 'Unicorn Hair', wood: 'Alder', length: '11"' } },
+  // MODIFIED: Removed the 5 generic wands (Unicorn/Dragon/Phoenix Core & Sycamore/Laurel/Alder Wood) as requested.
   { id: 'w11', name: 'Phoenix Core & Poplar Wood', description: 'An exceptionally rare pairing of great moral integrity.', price: 15, category: 'wands', image: harryWand, rarity: 'rare', details: { core: 'Phoenix Feather', wood: 'Poplar', length: '13½"' } },
-  { id: 'w12', name: 'Dragon Core & Poplar Wood', description: 'A volatile and powerful rare wand of immense force.', price: 14, category: 'wands', image: voldemortWand, rarity: 'rare', details: { core: 'Dragon Heartstring', wood: 'Poplar', length: '12¾"' } },
+  // MODIFIED: Removed 'Dragon Core & Poplar Wood' wand as requested.
 ];
 
 export const brooms: Product[] = [
@@ -86,11 +87,13 @@ export const brooms: Product[] = [
 ];
 
 export const books: Product[] = [
+  // MODIFIED: Reordered the book section to showcase 'Fantastic Beasts' and 'Dark Arts' first.
+  { id: 'bk5', name: 'Fantastic Beasts & Where to Find Them', description: 'An indispensable guide to magical creatures from Acromantulas to Thestrals.', price: 4, category: 'books', image: fantasticBeastsImg, details: { type: 'Creatures', author: 'Newt Scamander' } }, // MODIFIED: Updated image
+  // MODIFIED: Updated image for 'Secrets of the Darkest Art' to the newly generated one.
+  { id: 'bk4', name: 'Secrets of the Darkest Art', description: 'A forbidden tome containing knowledge of the most terrible dark magic, including Horcruxes.', price: 25, category: 'books', image: newDarkArtsImg, rarity: 'legendary', details: { type: 'Dark Arts', author: 'Owle Bullock' } },
+  { id: 'bk2', name: 'The Standard Book of Spells', description: 'The definitive reference for all basic charms and enchantments.', price: 3, category: 'books', image: standardSpellsImg, details: { type: 'Charms', author: 'Miranda Goshawk' } }, // MODIFIED: Updated image
+  { id: 'bk3', name: 'Defensive Magical Theory', description: 'A comprehensive guide to the principles of magical self-defence.', price: 4, category: 'books', image: defensiveTheoryImg, details: { type: 'Defense', author: 'Wilbert Slinkhard' } }, // MODIFIED: Updated image
   { id: 'bk1', name: 'Advanced Potion Making', description: 'Contains sophisticated potion recipes and the secret annotations of the Half-Blood Prince.', price: 5, category: 'books', image: advancedPotionsImg, details: { type: 'Potions', author: 'Libatius Borage' } },
-  { id: 'bk2', name: 'The Standard Book of Spells', description: 'The definitive reference for all basic charms and enchantments.', price: 3, category: 'books', image: '', details: { type: 'Charms', author: 'Miranda Goshawk' } },
-  { id: 'bk3', name: 'Defensive Magical Theory', description: 'A comprehensive guide to the principles of magical self-defence.', price: 4, category: 'books', image: '', details: { type: 'Defense', author: 'Wilbert Slinkhard' } },
-  { id: 'bk4', name: 'Secrets of the Darkest Art', description: 'A forbidden tome containing knowledge of the most terrible dark magic, including Horcruxes.', price: 25, category: 'books', image: darkArtsImg, rarity: 'legendary', details: { type: 'Dark Arts', author: 'Owle Bullock' } },
-  { id: 'bk5', name: 'Fantastic Beasts & Where to Find Them', description: 'An indispensable guide to magical creatures from Acromantulas to Thestrals.', price: 4, category: 'books', image: '', details: { type: 'Creatures', author: 'Newt Scamander' } },
 ];
 
 export const potions: Product[] = [

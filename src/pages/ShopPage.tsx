@@ -88,7 +88,8 @@ const ShopPage = ({ category }: ShopPageProps) => {
         </div>
       ) : standardProducts.length > 0 && (
         /* Otherwise, grid out all the products that matched the search! */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        // MODIFIED: Capped the grid columns to 3 (removed xl:grid-cols-4) so it's always exactly 3 items per line max.
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {standardProducts.map((p, i) => (
             // The 'animationDelay' inline style makes them fade in one after the other in a staggering effect
             <div key={p.id} className="animate-fade-in" style={{ animationDelay: `${i * 0.05}s` }}>
