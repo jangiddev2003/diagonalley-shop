@@ -51,9 +51,9 @@ const ProductViewer = ({ product }: { product: Product }) => {
           <ThreeDViewer productName={product.name} />
         ) : (
           // Otherwise, render standard 2D images
-          <div className="transition-none">
+          <div className="transition-none w-full h-full">
             {product.image ? (
-              <img src={product.image} alt={product.name} className="h-28 w-auto object-contain" />
+              <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
             ) : (
               <img src={fallbackIcon} alt={product.category} className="h-20 w-20 object-contain" />
             )}
@@ -62,7 +62,7 @@ const ProductViewer = ({ product }: { product: Product }) => {
 
         {/* A tiny hint in the corner telling the user they can drag to rotate */}
         <div className="absolute bottom-2 right-2 flex items-center gap-1 text-[10px] text-muted-foreground pointer-events-none">
-          <RotateCcw className="h-3 w-3" /> {product.category === 'wands' || product.category === 'brooms' ? 'Drag to rotate' : 'View'}
+          {/* <RotateCcw className="h-3 w-3" /> {product.category === 'wands' || product.category === 'brooms' ? 'Drag to rotate' : 'View'} */}
         </div>
       </div>
 
@@ -70,9 +70,16 @@ const ProductViewer = ({ product }: { product: Product }) => {
       <div>
         <h3 className="font-display text-sm font-semibold text-foreground">{product.name}</h3>
 
+        {/* Description */}
+        {product.description && (
+          <p className="mt-1 text-xs text-muted-foreground line-clamp-2 font-body">
+            {product.description}
+          </p>
+        )}
+
         {/* Render product-specific details (like house colors or potion effects) as small chips */}
         {product.details && (
-          <div className="mt-1 flex flex-wrap gap-1">
+          <div className="mt-2 flex flex-wrap gap-1">
             {Object.entries(product.details).map(([k, v]) => (
               <span key={k} className="text-[10px] px-2 py-0.5 rounded-full bg-muted/50 text-muted-foreground">
                 {k}: {v}

@@ -66,9 +66,15 @@ const ShopPage = ({ category }: ShopPageProps) => {
       {/* If there are NO featured items (length is 0), this entire block is skipped! */}
       {featuredProducts.length > 0 && (
         <div className="mb-12">
-          <h2 className="font-display text-xl font-bold text-foreground mb-4 text-center">
-            ✨ Interactive 360° Viewer — Drag to Rotate
-          </h2>
+          {(category === 'wands' || category === 'brooms') ? (
+            <h2 className="font-display text-xl font-bold text-foreground mb-4 text-center">
+              ✨ Interactive 360° Viewer — Drag to Rotate
+            </h2>
+          ) : (
+            <h2 className="font-display text-xl font-bold text-foreground mb-4 text-center">
+              ✨ Featured & Rare Collection
+            </h2>
+          )}
           {/* CSS Grid layout for the big viewers */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Loop over our filtered featured array */}
