@@ -25,6 +25,9 @@ const PlatformPage = () => {
       setRevealed(true);
       setIsBreaking(false);
       sessionStorage.setItem('platform-used', 'true');
+      // Store the coupon in localStorage so CartPage can validate it
+      localStorage.setItem('platform-coupon-code', `MAGIC${pct}`);
+      localStorage.setItem('platform-coupon-discount', String(pct));
     }, 2000);
   }, [alreadyUsed, isBreaking]);
 

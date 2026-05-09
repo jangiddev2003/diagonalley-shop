@@ -35,6 +35,7 @@ import SpellCastingPage from "./pages/SpellCastingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import PlatformPage from "./pages/PlatformPage";
+import OrdersPage from "./pages/OrdersPage";
 // NotFound is the component that shows up if a user goes to a URL that doesn't exist.
 import NotFound from "./pages/NotFound";
 
@@ -89,6 +90,7 @@ const App = () => (
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/platform" element={<PlatformPage />} />
+            <Route path="/orders" element={<OrdersPage />} />
             
             {/* The "*" path is a wildcard. It catches ANY url that didn't match the ones defined above. */}
             <Route path="*" element={<NotFound />} />

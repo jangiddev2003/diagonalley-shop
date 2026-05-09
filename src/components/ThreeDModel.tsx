@@ -1616,7 +1616,7 @@ const CleansweepBroom = () => {
   );
 };
 
-export const ThreeDViewer = ({ productName }: { productName?: string }) => {
+export const ThreeDViewer = ({ productName, noBackground = false, noAutoRotate = false }: { productName?: string; noBackground?: boolean; noAutoRotate?: boolean }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -1655,7 +1655,7 @@ export const ThreeDViewer = ({ productName }: { productName?: string }) => {
       onMouseLeave={handleMouseLeave}
       className={`absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing group rounded-md overflow-hidden ${isWand ? '' : 'bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-stone-400/40 via-stone-800 to-black'}`}
     >
-      {isWand && (
+      {isWand && !noBackground && (
         <video
           ref={videoRef}
           src={olivanderVideo}
@@ -1716,7 +1716,7 @@ export const ThreeDViewer = ({ productName }: { productName?: string }) => {
           <OrbitControls
             enableZoom={false} // Locked so they can't scroll wheel through it
             enablePan={false}  // Locked so they can't right click drag it off screen
-            autoRotate // Spins on its own!
+            autoRotate={!noAutoRotate} // Spins on its own unless disabled!
             autoRotateSpeed={1.0}
             maxPolarAngle={Math.PI / 1.5} // Stops them from looking exactly top-down
             minPolarAngle={Math.PI / 3}   // Stops them from looking exactly bottom-up

@@ -9,7 +9,7 @@ import { useAuth } from '@/context/AuthContext';
 // React Hooks: useState (to hold variables that change) and useEffect (to run code when things happen)
 import { useState, useEffect } from 'react';
 // We import some cool SVG icons from the lucide-react library
-import { ShoppingCart, Menu, X, Sparkles, LogOut, User } from 'lucide-react';
+import { ShoppingCart, Menu, X, Sparkles, LogOut, User, Package } from 'lucide-react';
 
 // We import images directly into the component. Vite (our bundler) handles turning these into proper URLs.
 import wandIcon from '@/assets/wand-icon.png';
@@ -163,6 +163,17 @@ const Navbar = () => {
             </Link>
           )}
 
+          {/* Orders Button - always visible */}
+          <Link
+            to="/orders"
+            className={`hidden sm:flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted hover:text-primary ${
+              location.pathname === '/orders' ? 'text-primary bg-muted' : 'text-foreground'
+            }`}
+            title="My Orders"
+          >
+            <Package className="h-5 w-5" />
+          </Link>
+
           {/* Shopping Cart Button */}
           <Link
             to="/cart"
@@ -221,6 +232,17 @@ const Navbar = () => {
               {item.label}
             </Link>
           ))}
+
+          {/* MOBILE ORDERS LINK - always visible */}
+          <Link
+            to="/orders"
+            onClick={() => setMobileOpen(false)}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medieval transition-all hover:bg-muted ${
+              location.pathname === '/orders' ? 'text-primary bg-muted' : 'text-foreground'
+            }`}
+          >
+            📦 My Orders
+          </Link>
 
           {/* MOBILE AUTH SECTION */}
           {isAuthenticated ? (

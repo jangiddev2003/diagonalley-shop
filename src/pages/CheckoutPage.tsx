@@ -9,11 +9,12 @@ import CurrencyDisplay from '@/components/CurrencyDisplay';
 import { galleonsToUSD } from '@/lib/currency';
 import magicQrImg from '@/assets/magic-qr.png';
 import { ThreeDViewer } from '@/components/ThreeDModel';
+import { saveOrder } from '@/pages/OrdersPage';
 
 // 2. MAIN COMPONENT
 const CheckoutPage = () => {
   // Grab our shopping cart data and the clearCart function
-  const { totalPrice, totalItems, clearCart } = useCart();
+  const { items, totalPrice, totalItems, clearCart } = useCart();
   const navigate = useNavigate(); // The function used to redirect the user
 
   // STATE MACHINE: We control the complex checkout flow by changing what "stage" we are in.
@@ -32,8 +33,15 @@ const CheckoutPage = () => {
 
   // LOGIC: Check for any magical discount codes applied earlier
   const spellDiscount = Number(sessionStorage.getItem('spell-discount') || '0');
-  const discountedTotal = totalPrice * (1 - spellDiscount / 100);
-  const finalPrice = spellDiscount > 0 ? discountedTotal : totalPrice;
+
+  // LOGIC: Check for Platform 9¾ coupon discount
+  const savedCoupon = localStorage.getItem('applied-platform-coupon');
+  const platformDiscount = savedCoupon ? (JSON.parse(savedCoupon)?.discount || 0) : 0;
+
+  // Apply both discounts multiplicatively (same as CartPage)
+  const afterSpellDiscount = totalPrice * (1 - spellDiscount / 100);
+  const afterAllDiscounts = afterSpellDiscount * (1 - platformDiscount / 100);
+  const finalPrice = afterAllDiscounts;
 
   // LOGIC: This single arrow function handles typing in ALL input fields.
   // It uses the "name" attribute of the HTML input (like name="phone") to dynamically update the correct property in our state object!
@@ -57,9 +65,29 @@ const CheckoutPage = () => {
       setPaymentStage('qr'); // Show the QR code briefly
 
       setTimeout(() => {
+        // Save the order to history before clearing
+        saveOrder({
+          id: `ORD-${Date.now()}`,
+          date: new Date().toISOString(),
+          items: items.map(({ product, quantity }) => ({
+            name: product.name,
+            price: product.price,
+            quantity,
+            image: product.image,
+            category: product.category,
+          })),
+          subtotal: totalPrice,
+          spellDiscount,
+          platformDiscount,
+          finalTotal: finalPrice,
+          deliveryAddress: form,
+          status: 'processing',
+        });
+
         setPaymentStage('success'); // Finish the flow
         clearCart(); // Empty the user's cart automatically because they bought the items
         sessionStorage.removeItem('spell-discount'); // Remove their discount so they can't reuse it
+        localStorage.removeItem('applied-platform-coupon'); // Clear the platform coupon too
         setShowThankYou(true); // Trigger the final modal
       }, 3000);
     }, 1500);
@@ -86,9 +114,13 @@ const CheckoutPage = () => {
         </div>
         <p className="text-sm text-muted-foreground mt-1">${galleonsToUSD(finalPrice)}</p>
         <p className="text-xs text-muted-foreground mt-1">{totalItems} items</p>
-        {/* If a discount was applied, show it in green */}
+        {/* If a spell discount was applied, show it in green */}
         {spellDiscount > 0 && (
-          <p className="text-xs text-green-400 mt-1">Spell discount: -{spellDiscount}%</p>
+          <p className="text-xs text-green-400 mt-1">⚡ Spell discount: -{spellDiscount}%</p>
+        )}
+        {/* If a platform coupon was applied, show it in green */}
+        {platformDiscount > 0 && (
+          <p className="text-xs text-green-400 mt-1">🚂 Platform 9¾ discount: -{platformDiscount}%</p>
         )}
       </div>
 
@@ -145,9 +177,9 @@ const CheckoutPage = () => {
       {paymentStage === 'revelio' && (
         <div className="text-center p-8 rounded-xl border border-primary/50 bg-card animate-fade-in glow-gold-intense flex flex-col items-center">
           <div className="relative h-48 w-full max-w-[200px] mb-4">
-            <ThreeDViewer productName="The Elder Wand" />
+            <ThreeDViewer productName="The Elder Wand" noBackground noAutoRotate />
           </div>
-          <p className="font-medieval text-lg text-primary text-glow animate-sparkle mt-4">Casting payment spell...</p>
+          <p className="font-medieval text-lg text-primary text-glow animate-pulse mt-4">Casting payment spell...</p>
         </div>
       )}
 
@@ -206,13 +238,21 @@ const CheckoutPage = () => {
                 <FeedbackForm />
               </div>
 
-              <button
-                // The big return button functions exactly like the X icon via the exact same functions
-                onClick={() => { setShowThankYou(false); navigate('/'); }}
-                className="mt-4 px-8 py-3 rounded-lg bg-primary text-primary-foreground font-display font-semibold hover:glow-gold-intense active:scale-95 transition-all"
-              >
-                Return to Marketplace
-              </button>
+              <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                <button
+                  onClick={() => { setShowThankYou(false); navigate('/orders'); }}
+                  className="flex-1 px-6 py-3 rounded-lg border border-primary/50 text-primary font-display font-semibold hover:bg-primary/10 active:scale-95 transition-all"
+                >
+                  📦 View My Orders
+                </button>
+                <button
+                  // The big return button functions exactly like the X icon via the exact same functions
+                  onClick={() => { setShowThankYou(false); navigate('/'); }}
+                  className="flex-1 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-display font-semibold hover:glow-gold-intense active:scale-95 transition-all"
+                >
+                  Return to Marketplace
+                </button>
+              </div>
             </div>
           </div>
         </div>

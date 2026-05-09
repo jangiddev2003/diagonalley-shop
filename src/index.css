@@ -257,6 +257,44 @@
   animation: bricks-scatter 1.5s ease-out forwards;
 }
 
+/* Coupon applied magical glow */
+@keyframes coupon-glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 8px hsl(120 60% 40% / 0.3), 0 0 20px hsl(120 60% 40% / 0.1);
+  }
+  50% {
+    box-shadow: 0 0 15px hsl(120 60% 40% / 0.5), 0 0 35px hsl(120 60% 40% / 0.2), 0 0 50px hsl(43 65% 52% / 0.1);
+  }
+}
+
+.coupon-applied-glow {
+  animation: coupon-glow-pulse 2s ease-in-out infinite;
+}
+
+/* Fade in animation */
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Glow pulse for buttons */
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 15px hsl(var(--gold) / 0.4), 0 0 30px hsl(var(--gold) / 0.2);
+  }
+  50% {
+    box-shadow: 0 0 25px hsl(var(--gold) / 0.6), 0 0 50px hsl(var(--gold) / 0.3);
+  }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
   width: 8px;
