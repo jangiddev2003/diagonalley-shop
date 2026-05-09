@@ -13,6 +13,9 @@ interface SequenceState {
   runCount: number;
 }
 
+/** Returns true if viewport width is <= 768px */
+const isMobile = () => typeof window !== 'undefined' && window.innerWidth <= 768;
+
 const FlyingCar = () => {
   const [seqState, setSeqState] = useState<SequenceState>({
     stage: 'IDLE',
@@ -28,8 +31,12 @@ const FlyingCar = () => {
   // Generates new random coordinates for the flight path
   const generateFlightParams = () => {
     const fromLeft = Math.random() > 0.5;
-    const startY = 15 + Math.random() * 40;
-    const endY = startY + (Math.random() * 20 - 10);
+    const mobile = isMobile();
+    // On mobile, keep the Y range tighter so elements stay visible
+    const startY = mobile
+      ? 20 + Math.random() * 30
+      : 15 + Math.random() * 40;
+    const endY = startY + (Math.random() * (mobile ? 10 : 20) - (mobile ? 5 : 10));
     return { fromLeft, startY, endY };
   };
 
@@ -57,7 +64,32 @@ const FlyingCar = () => {
 
   // 2. State Machine Transitions via onAnimationEnd
   const handleSoloCarEnd = () => {
-    // When the solo car finishes, immediately send the car again with the train
+    // On mobile/small screens: skip the train, go straight to idle & schedule next
+    if (isMobile()) {
+      const nextCount = seqState.runCount + 1;
+      const MAX_RUNS = Math.floor(Math.random() * 3) + 1;
+
+      setSeqState((prev) => ({
+        ...prev,
+        stage: 'IDLE',
+        runCount: nextCount,
+      }));
+
+      if (nextCount < MAX_RUNS) {
+        timerRef.current = setTimeout(() => {
+          startSequence();
+        }, 3000);
+      } else {
+        const gapDelayMs = 120000 + Math.floor(Math.random() * 60000);
+        timerRef.current = setTimeout(() => {
+          setSeqState((prev) => ({ ...prev, runCount: 0 }));
+          startSequence();
+        }, gapDelayMs);
+      }
+      return;
+    }
+
+    // On tablet/laptop/desktop: send the car again with the train
     setSeqState((prev) => ({
       ...prev,
       stage: 'CAR_WITH_TRAIN',
@@ -70,7 +102,7 @@ const FlyingCar = () => {
 
   const handleTrainEnd = () => {
     const nextCount = seqState.runCount + 1;
-    
+
     // MODIFIED: Reduced max rotations to between 1 and 3 times per burst (previously 5 to 6)
     const MAX_RUNS = Math.floor(Math.random() * 3) + 1;
 
@@ -89,7 +121,7 @@ const FlyingCar = () => {
       // MODIFIED: Increased the idle gap between entire bursts to 2-3 minutes.
       // 120,000ms (2 mins) minimum + up to 60,000ms (1 min) randomly.
       const gapDelayMs = 120000 + Math.floor(Math.random() * 60000);
-      
+
       timerRef.current = setTimeout(() => {
         setSeqState((prev) => ({ ...prev, runCount: 0 }));
         startSequence();
@@ -100,11 +132,17 @@ const FlyingCar = () => {
   // Render nothing if idle
   if (seqState.stage === 'IDLE') return null;
 
-  // Visual calculation
+  // Visual calculation — responsive offsets
+  const mobile = isMobile();
   const flipStyle = seqState.fromLeft ? 'scaleX(-1)' : 'none';
-  const startX = seqState.fromLeft ? -30 : 130;
-  const endX = seqState.fromLeft ? 130 : -30;
+  // On mobile, use tighter offsets so the elements don't fly too far off-screen
+  const startX = seqState.fromLeft ? (mobile ? -20 : -30) : (mobile ? 110 : 130);
+  const endX = seqState.fromLeft ? (mobile ? 110 : 130) : (mobile ? -20 : -30);
   const bgDrift = seqState.startY - 3; // Bobbing effect height
+
+  // Gap between car and train — tighter on mobile so train stays visible
+  const trainGapX = mobile ? 4 : 8;
+  const carLeadX = mobile ? 3 : 5;
 
   return (
     <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
@@ -118,10 +156,10 @@ const FlyingCar = () => {
           src={flyingCarImg}
           alt="Magical Flying Car"
           onAnimationEnd={handleSoloCarEnd} // Tying the transition directly to the CSS completion!
-          className="absolute h-12 md:h-16 object-contain"
+          className="absolute flying-car-solo object-contain"
           style={{
             transform: flipStyle,
-            animation: 'fly-base 6s ease-in-out forwards',
+            animation: `fly-base ${mobile ? '5s' : '6s'} ease-in-out forwards`,
             '--sx': `${startX}%`,
             '--sy': `${seqState.startY}%`,
             '--my': `${bgDrift}%`,
@@ -141,16 +179,15 @@ const FlyingCar = () => {
             key={`chased-${seqState.id}`}
             src={flyingCarImg}
             alt="Magical Flying Car"
-            className="absolute h-10 md:h-14 object-contain"
+            className="absolute flying-car-chased object-contain"
             style={{
               transform: flipStyle,
-              // Fixed at 8.0s so they travel at similar speeds
-              animation: 'fly-base 8s ease-in-out forwards',
-              '--sx': `${seqState.fromLeft ? startX + 5 : startX - 5}%`,
+              animation: `fly-base ${mobile ? '6.5s' : '8s'} ease-in-out forwards`,
+              '--sx': `${seqState.fromLeft ? startX + carLeadX : startX - carLeadX}%`,
               // Removed vertical offset to match the train perfectly!
               '--sy': `${seqState.startY}%`,
               '--my': `${bgDrift}%`,
-              '--ex': `${seqState.fromLeft ? endX + 5 : endX - 5}%`,
+              '--ex': `${seqState.fromLeft ? endX + carLeadX : endX - carLeadX}%`,
               '--ey': `${seqState.endY}%`,
             } as React.CSSProperties}
           />
@@ -161,19 +198,18 @@ const FlyingCar = () => {
             className="absolute flex items-center justify-center pointer-events-none"
             onAnimationEnd={handleTrainEnd}
             style={{
-              // Synchronized speed and greatly reduced the percentage gap
-              animation: 'fly-base 8.2s ease-in-out forwards',
+              animation: `fly-base ${mobile ? '6.7s' : '8.2s'} ease-in-out forwards`,
               zIndex: -1,
-              '--sx': `${seqState.fromLeft ? startX - 8 : startX + 8}%`,
+              '--sx': `${seqState.fromLeft ? startX - trainGapX : startX + trainGapX}%`,
               // Removed vertical offset to match the car perfectly!
               '--sy': `${seqState.startY}%`,
               '--my': `${bgDrift}%`,
-              '--ex': `${seqState.fromLeft ? endX - 8 : endX + 8}%`,
+              '--ex': `${seqState.fromLeft ? endX - trainGapX : endX + trainGapX}%`,
               '--ey': `${seqState.endY}%`,
             } as React.CSSProperties}
           >
             {/* The smoke effect particles */}
-            <div className={`absolute ${seqState.fromLeft ? '-left-10' : '-right-10'} -top-6 w-16 h-16 pointer-events-none`}>
+            <div className={`absolute ${seqState.fromLeft ? '-left-10' : '-right-10'} -top-6 smoke-container pointer-events-none`}>
               <span className="smoke-particle p1"></span>
               <span className="smoke-particle p2"></span>
               <span className="smoke-particle p3"></span>
@@ -183,7 +219,7 @@ const FlyingCar = () => {
             <img
               src={trainImg}
               alt="Hogwarts Express"
-              className="h-20 md:h-28 object-contain drop-shadow-2xl"
+              className="flying-train object-contain drop-shadow-2xl"
               style={{ transform: flipStyle }}
             />
           </div>
@@ -192,19 +228,62 @@ const FlyingCar = () => {
 
       {/* Reusable Keyframes using CSS Variables ensures pure reliability */}
       <style>{`
+        /* Responsive sizes for the flying elements */
+        .flying-car-solo {
+          height: 2rem;       /* 32px — mobile default */
+        }
+        .flying-car-chased {
+          height: 1.75rem;    /* 28px — mobile default */
+        }
+        .flying-train {
+          height: 2.75rem;    /* 44px — mobile default */
+        }
+        .smoke-container {
+          width: 2.5rem;
+          height: 2.5rem;
+        }
+
+        /* Tablet and up */
+        @media (min-width: 640px) {
+          .flying-car-solo   { height: 2.5rem; }
+          .flying-car-chased { height: 2.25rem; }
+          .flying-train      { height: 4rem; }
+          .smoke-container   { width: 3rem; height: 3rem; }
+        }
+
+        /* Desktop */
+        @media (min-width: 768px) {
+          .flying-car-solo   { height: 4rem; }
+          .flying-car-chased { height: 3.5rem; }
+          .flying-train      { height: 7rem; }
+          .smoke-container   { width: 4rem; height: 4rem; }
+        }
+
         .smoke-particle {
           position: absolute;
-          width: 10px;
-          height: 10px;
+          width: 6px;
+          height: 6px;
           background: rgba(255, 255, 255, 0.7);
           border-radius: 50%;
-          filter: blur(5px);
+          filter: blur(3px);
           animation: smokeOut 2.5s infinite ease-out;
         }
+        @media (min-width: 768px) {
+          .smoke-particle {
+            width: 10px;
+            height: 10px;
+            filter: blur(5px);
+          }
+        }
         .smoke-particle.p1 { animation-delay: 0s; left: 10%; }
-        .smoke-particle.p2 { animation-delay: 0.6s; left: 30%; width: 14px; height: 14px; }
-        .smoke-particle.p3 { animation-delay: 1.2s; left: 60%; width: 12px; height: 12px; }
-        .smoke-particle.p4 { animation-delay: 1.8s; left: 80%; width: 18px; height: 18px; filter: blur(7px); }
+        .smoke-particle.p2 { animation-delay: 0.6s; left: 30%; width: 9px; height: 9px; }
+        .smoke-particle.p3 { animation-delay: 1.2s; left: 60%; width: 8px; height: 8px; }
+        .smoke-particle.p4 { animation-delay: 1.8s; left: 80%; width: 11px; height: 11px; filter: blur(5px); }
+        @media (min-width: 768px) {
+          .smoke-particle.p2 { width: 14px; height: 14px; }
+          .smoke-particle.p3 { width: 12px; height: 12px; }
+          .smoke-particle.p4 { width: 18px; height: 18px; filter: blur(7px); }
+        }
         
         @keyframes smokeOut {
           0% { transform: scale(1) translateY(0); opacity: 0.9; }
@@ -223,3 +302,4 @@ const FlyingCar = () => {
 };
 
 export default FlyingCar;
+

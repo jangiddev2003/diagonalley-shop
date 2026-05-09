@@ -1,29 +1,54 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Lock, User } from 'lucide-react';
+import { Lock, User, Loader2 } from 'lucide-react';
 import gateImg from '@/assets/hogwarts-gate.png';
+import { useAuth } from '@/context/AuthContext';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
+  const { login } = useAuth();
+
+  // CHANGED: Using email instead of username for real authentication
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isOpening, setIsOpening] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
-    if (!username.trim() || !password.trim()) {
+    // --- Client-side validation (same UX as before) ---
+    if (!email.trim() || !password.trim()) {
       setError('The spell failed. Try again.');
       return;
     }
 
-    setIsOpening(true);
-    setTimeout(() => {
-      localStorage.setItem('diagonally-user', username);
-      navigate('/');
-    }, 1500);
+    // --- REAL BACKEND AUTH (replaces fake localStorage auth) ---
+    // COMMENTED OUT — Old fake authentication logic:
+    // setIsOpening(true);
+    // setTimeout(() => {
+    //   localStorage.setItem('diagonally-user', username);
+    //   navigate('/');
+    // }, 1500);
+
+    setIsSubmitting(true);
+
+    // Call the real backend login API via AuthContext
+    const result = await login(email, password);
+
+    if (result.success) {
+      // Trigger the gate-opening animation, then redirect
+      setIsOpening(true);
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
+    } else {
+      // Show the backend error message to the user
+      setError(result.message);
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -60,13 +85,13 @@ const LoginPage = () => {
           <div>
             <label className="block font-display text-xs font-semibold text-foreground mb-1">
               <User className="inline h-3 w-3 mr-1" />
-              Your Wizarding Name
+              Your Owl Mail (Email)
             </label>
             <input
-              type="text"
-              value={username}
-              onChange={e => setUsername(e.target.value)}
-              placeholder="Harry Potter"
+              type="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="harry@hogwarts.edu"
               className="w-full px-4 py-2.5 rounded-lg bg-muted border border-border text-foreground text-sm font-body placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             />
           </div>
@@ -87,10 +112,17 @@ const LoginPage = () => {
 
           <button
             type="submit"
-            disabled={isOpening}
-            className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-lg hover:glow-gold-intense active:scale-95 transition-all disabled:opacity-50"
+            disabled={isOpening || isSubmitting}
+            className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-lg hover:glow-gold-intense active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            Alohomora 🔓
+            {isSubmitting && !isOpening ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Casting spell...
+              </>
+            ) : (
+              'Alohomora 🔓'
+            )}
           </button>
 
           <div className="flex items-center justify-between text-xs font-body">

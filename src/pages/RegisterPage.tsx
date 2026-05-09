@@ -1,30 +1,74 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserPlus } from 'lucide-react';
-import OtpPopup from '@/components/OtpPopup';
+import { UserPlus, Lock, Loader2 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+
+// COMMENTED OUT — Old OTP popup import (was part of fake auth flow):
+// import OtpPopup from '@/components/OtpPopup';
 
 const houses = ['Gryffindor', 'Hufflepuff', 'Ravenclaw', 'Slytherin', 'No Preference'];
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', mobile: '', house: '' });
-  const [showOtp, setShowOtp] = useState(false);
+  const { register } = useAuth();
+
+  // CHANGED: Added password field for real authentication
+  const [form, setForm] = useState({ name: '', email: '', password: '', mobile: '', house: '' });
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [verified, setVerified] = useState(false);
+
+  // COMMENTED OUT — Old fake OTP state (was part of dummy auth):
+  // const [showOtp, setShowOtp] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.name || !form.email || !form.mobile) return;
-    setShowOtp(true);
-  };
+    setError('');
 
-  const handleVerified = () => {
-    setShowOtp(false);
-    setVerified(true);
-    setTimeout(() => navigate('/'), 2000);
+    if (!form.name || !form.email || !form.password) {
+      setError('Please fill in all required fields.');
+      return;
+    }
+
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters long.');
+      return;
+    }
+
+    // --- REAL BACKEND REGISTRATION (replaces fake OTP flow) ---
+    // COMMENTED OUT — Old fake registration logic:
+    // if (!form.name || !form.email || !form.mobile) return;
+    // setShowOtp(true);
+
+    // COMMENTED OUT — Old fake verified handler:
+    // const handleVerified = () => {
+    //   setShowOtp(false);
+    //   setVerified(true);
+    //   setTimeout(() => navigate('/'), 2000);
+    // };
+
+    setIsSubmitting(true);
+
+    // Call the real backend register API via AuthContext
+    const result = await register({
+      username: form.name,
+      email: form.email,
+      password: form.password,
+    });
+
+    if (result.success) {
+      // Show the success screen (same animation as before)
+      setVerified(true);
+      setTimeout(() => navigate('/'), 2000);
+    } else {
+      // Show the backend error message
+      setError(result.message);
+      setIsSubmitting(false);
+    }
   };
 
   if (verified) {
@@ -48,6 +92,13 @@ const RegisterPage = () => {
           <p className="font-medieval text-sm text-muted-foreground">Begin your magical journey</p>
         </div>
 
+        {/* Error message display */}
+        {error && (
+          <div className="mb-4 p-3 rounded-lg bg-destructive/10 border border-destructive/30 text-center">
+            <p className="text-sm text-destructive font-body">{error}</p>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-border bg-card/80 backdrop-blur-sm p-6 glow-gold animate-fade-in">
           <div>
             <label className="block font-display text-xs font-semibold text-foreground mb-1">
@@ -69,11 +120,23 @@ const RegisterPage = () => {
             />
           </div>
 
+          {/* NEW: Password field for real authentication */}
           <div>
-            <label className="block font-display text-xs font-semibold text-foreground mb-1">Mobile Number</label>
+            <label className="block font-display text-xs font-semibold text-foreground mb-1">
+              <Lock className="inline h-3 w-3 mr-1" /> Secret Spell (Password)
+            </label>
+            <input
+              type="password" name="password" value={form.password} onChange={handleChange}
+              placeholder="Min 6 characters" required
+              className="w-full px-4 py-2.5 rounded-lg bg-muted border border-border text-foreground text-sm font-body placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+            />
+          </div>
+
+          <div>
+            <label className="block font-display text-xs font-semibold text-foreground mb-1">Mobile Number (Optional)</label>
             <input
               type="tel" name="mobile" value={form.mobile} onChange={handleChange}
-              placeholder="+44 7700 900000" required
+              placeholder="+44 7700 900000"
               className="w-full px-4 py-2.5 rounded-lg bg-muted border border-border text-foreground text-sm font-body placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             />
           </div>
@@ -91,14 +154,24 @@ const RegisterPage = () => {
 
           <button
             type="submit"
-            className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-lg hover:glow-gold-intense active:scale-95 transition-all"
+            disabled={isSubmitting}
+            className="w-full py-3 rounded-lg bg-primary text-primary-foreground font-display font-semibold text-lg hover:glow-gold-intense active:scale-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
           >
-            Enroll Now 🏰
+            {isSubmitting ? (
+              <>
+                <Loader2 className="h-5 w-5 animate-spin" />
+                Enrolling...
+              </>
+            ) : (
+              'Enroll Now 🏰'
+            )}
           </button>
         </form>
       </div>
 
+      {/* COMMENTED OUT — Old fake OTP popup (no real verification):
       {showOtp && <OtpPopup onVerified={handleVerified} onClose={() => setShowOtp(false)} />}
+      */}
     </div>
   );
 };

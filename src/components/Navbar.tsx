@@ -1,13 +1,15 @@
 // 1. IMPORTS
 // React Router's Link is used instead of standard <a> tags so we can switch pages without reloading the whole website.
 // useLocation lets us know what the current URL is so we can highlight the active button.
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 // Our custom cart context lets the navbar know how many items the user put in their cart.
 import { useCart } from '@/context/CartContext';
+// Our custom auth context lets the navbar know if the user is logged in.
+import { useAuth } from '@/context/AuthContext';
 // React Hooks: useState (to hold variables that change) and useEffect (to run code when things happen)
 import { useState, useEffect } from 'react';
 // We import some cool SVG icons from the lucide-react library
-import { ShoppingCart, Menu, X, Sparkles } from 'lucide-react';
+import { ShoppingCart, Menu, X, Sparkles, LogOut, User } from 'lucide-react';
 
 // We import images directly into the component. Vite (our bundler) handles turning these into proper URLs.
 import wandIcon from '@/assets/wand-icon.png';
@@ -38,8 +40,12 @@ const Navbar = () => {
   // STATE: Get the total number of items from the shopping cart context.
   const { totalItems } = useCart();
   
+  // STATE: Get authentication state from AuthContext
+  const { user, isAuthenticated, logout } = useAuth();
+  
   // STATE: Get the current route/URL from React Router
   const location = useLocation();
+  const navigate = useNavigate();
   
   // STATE: Keep track of whether the mobile dropdown menu is currently open or closed (true/false)
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -63,6 +69,13 @@ const Navbar = () => {
     // Save their preference to localStorage so their web browser remembers it next time they visit!
     localStorage.setItem('diagonally-theme', isDark ? 'dark' : 'light');
   }, [isDark]);
+
+  // LOGIC: Handle logout
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    setMobileOpen(false);
+  };
 
   return (
     // 'sticky top-0 z-50' makes sure the navbar stays pasted to the top of the screen even as you scroll down.
@@ -111,7 +124,7 @@ const Navbar = () => {
           ))}
         </div>
 
-        {/* RIGHT SIDE (Buttons, Cart, and Mobile Menu Toggle) */}
+        {/* RIGHT SIDE (Buttons, Cart, Auth, and Mobile Menu Toggle) */}
         <div className="flex items-center gap-2">
           
           {/* Theme Toggle Button (Lumos for Light / Nox for Dark) */}
@@ -124,13 +137,31 @@ const Navbar = () => {
             {isDark ? '🕯️ Lumos' : '🌑 Nox'}
           </button>
 
-          {/* Login Link */}
-          <Link
-            to="/login"
-            className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medieval text-foreground hover:bg-muted hover:text-primary transition-all"
-          >
-            🔐
-          </Link>
+          {/* AUTH SECTION: Show different buttons based on login state */}
+          {isAuthenticated ? (
+            // LOGGED IN: Show user greeting and logout button
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medieval text-primary">
+                <User className="h-3.5 w-3.5" />
+                {user?.username}
+              </span>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medieval text-foreground hover:bg-muted hover:text-destructive transition-all"
+                title="Logout"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ) : (
+            // NOT LOGGED IN: Show login link (same as original)
+            <Link
+              to="/login"
+              className="hidden sm:flex items-center gap-1 px-3 py-1.5 rounded-md text-sm font-medieval text-foreground hover:bg-muted hover:text-primary transition-all"
+            >
+              🔐
+            </Link>
+          )}
 
           {/* Shopping Cart Button */}
           <Link
@@ -190,13 +221,31 @@ const Navbar = () => {
               {item.label}
             </Link>
           ))}
-          <Link
-            to="/login"
-            onClick={() => setMobileOpen(false)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medieval text-foreground hover:bg-muted"
-          >
-            🔐 Login
-          </Link>
+
+          {/* MOBILE AUTH SECTION */}
+          {isAuthenticated ? (
+            <>
+              <div className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medieval text-primary">
+                <User className="h-3.5 w-3.5" />
+                {user?.username}
+              </div>
+              <button
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medieval text-foreground hover:bg-muted w-full text-left"
+              >
+                <LogOut className="h-3.5 w-3.5" />
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medieval text-foreground hover:bg-muted"
+            >
+              🔐 Login
+            </Link>
+          )}
         </div>
       )}
     </nav>

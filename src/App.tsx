@@ -11,6 +11,8 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 // The CartProvider wraps our app and allows any component inside to access the shopping cart data.
 import { CartProvider } from "@/context/CartContext";
+// AuthProvider wraps the app and provides authentication state (user, token, login, logout)
+import { AuthProvider } from "@/context/AuthContext";
 
 // 3. GLOBAL COMPONENTS
 // These components usually appear on every page (like the Navbar at the top and Footer at the bottom).
@@ -48,6 +50,8 @@ const App = () => (
     <TooltipProvider>
       {/* CartProvider makes sure any component can see how many items are in the cart */}
       <CartProvider>
+        {/* AuthProvider makes user/login/logout available to all components */}
+        <AuthProvider>
         {/* Sonner controls any pop-up notifications globally */}
         <Sonner />
         
@@ -93,6 +97,7 @@ const App = () => (
           {/* The Footer is also rendered at the bottom of every page */}
           <Footer />
         </BrowserRouter>
+        </AuthProvider>
       </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
