@@ -309,3 +309,33 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--gold) / 0.6);
 }
+
+/* ── Profile Panel slide-in ──────────────────────────────────────── */
+@keyframes slide-in-right {
+  from { transform: translateX(100%); opacity: 0; }
+  to   { transform: translateX(0);    opacity: 1; }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Sorting Hat infinite wobble (used in ceremony modal) ─────────── */
+.animate-sorting-wobble-infinite {
+  animation: sorting-wobble 1.2s ease-in-out infinite;
+}
+
+/* ── House glow utilities ─────────────────────────────────────────── */
+.glow-gryffindor { box-shadow: 0 0 20px rgba(239,68,68,0.5), 0 0 40px rgba(239,68,68,0.25); }
+.glow-hufflepuff { box-shadow: 0 0 20px rgba(234,179,8,0.5), 0 0 40px rgba(234,179,8,0.25); }
+.glow-ravenclaw  { box-shadow: 0 0 20px rgba(59,130,246,0.5), 0 0 40px rgba(59,130,246,0.25); }
+.glow-slytherin  { box-shadow: 0 0 20px rgba(34,197,94,0.5),  0 0 40px rgba(34,197,94,0.25); }
+
+/* ── Magical pulse ring (profile avatar) ─────────────────────────── */
+@keyframes ring-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--gold) / 0.4); }
+  50%       { box-shadow: 0 0 0 4px hsl(var(--gold) / 0.1); }
+}
+.animate-ring-pulse {
+  animation: ring-pulse 2s ease-in-out infinite;
+}

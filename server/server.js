@@ -1,99 +1,82 @@
 // ============================================
 // MAIN SERVER FILE (Entry Point)
 // ============================================
-// This is the starting point of our backend application.
-// It sets up Express, connects to MongoDB, registers middleware,
-// and starts listening for incoming HTTP requests.
+
+// Fix: Force IPv4 DNS globally — needed on Windows for MongoDB Atlas SRV lookup
+import dns from 'dns';
+dns.setDefaultResultOrder('ipv4first');
 
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
-// ============================================
-// 1. LOAD ENVIRONMENT VARIABLES
-// ============================================
-// dotenv reads the .env file and makes those values available
-// via process.env.VARIABLE_NAME throughout our entire app.
+// 1. Load env vars
 dotenv.config();
 
-// ============================================
-// 2. CONNECT TO DATABASE
-// ============================================
-// We call our connectDB function before starting the server.
-// This ensures the database is ready before we accept any requests.
+// 2. Connect to MongoDB
 connectDB();
 
-// ============================================
-// 3. CREATE EXPRESS APP
-// ============================================
+// 3. Create Express app
 const app = express();
 
-// ============================================
-// 4. GLOBAL MIDDLEWARE
-// ============================================
-
-// CORS (Cross-Origin Resource Sharing)
-// Our React frontend runs on port 8080, but our backend runs on port 5000.
-// By default, browsers block requests between different ports (origins).
-// CORS middleware tells the browser "it's okay, I trust this frontend!"
+// 4. CORS — allow localhost AND LAN devices
+const allowedOrigins = [
+  process.env.CLIENT_URL || 'http://localhost:8080',
+  'http://localhost:8080',
+  'http://127.0.0.1:8080',
+];
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:8080',
-    credentials: true, // Allow cookies and auth headers
+    origin: (origin, callback) => {
+      // Allow requests with no origin (curl, mobile apps) or any LAN IP
+      if (!origin || allowedOrigins.includes(origin) || /^http:\/\/192\.168\./.test(origin) || /^http:\/\/10\./.test(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
   })
 );
 
-// JSON Body Parser
-// This tells Express to automatically parse incoming JSON request bodies.
-// Without this, req.body would be undefined when the frontend sends JSON data.
+// 5. Body parsers
 app.use(express.json());
-
-// URL-encoded Body Parser (for form data)
 app.use(express.urlencoded({ extended: true }));
 
-// ============================================
-// 5. API ROUTES
-// ============================================
-// All authentication-related routes are prefixed with /api/auth
-// So the full URL becomes: http://localhost:5000/api/auth/register, etc.
-app.use('/api/auth', authRoutes);
+// 6. Routes
+app.use('/api/auth', authRoutes);   // /api/auth/register, /api/auth/login, etc.
+app.use('/api/user', userRoutes);   // /api/user/profile, /api/user/avatar, etc.
 
-// ============================================
-// 6. HEALTH CHECK ROUTE
-// ============================================
-// A simple route to verify the server is running.
-// Visit http://localhost:5000/ in your browser to check.
+// 7. Health check
 app.get('/', (req, res) => {
   res.json({
-    message: '🧙 Diagonalley Shop API is running!',
+    message: '🧙 Alohomora — Diagonalley Shop API is running!',
     endpoints: {
-      register: 'POST /api/auth/register',
-      login: 'POST /api/auth/login',
-      logout: 'POST /api/auth/logout',
-      me: 'GET /api/auth/me (protected)',
+      register:   'POST /api/auth/register',
+      login:      'POST /api/auth/login',
+      logout:     'POST /api/auth/logout',
+      me:         'GET  /api/auth/me (protected)',
+      profile:    'GET  /api/user/profile (protected)',
+      avatar:     'PUT  /api/user/avatar (protected)',
+      update:     'PUT  /api/user/update (protected)',
+      sort:       'POST /api/user/sort (protected)',
+      checkAuth:  'GET  /api/user/check-auth (protected)',
     },
   });
 });
 
-// ============================================
-// 7. GLOBAL ERROR HANDLER
-// ============================================
-// If any middleware or route throws an error that isn't caught,
-// this middleware catches it and sends a clean error response.
-app.use((err, req, res, next) => {
+// 8. Global error handler
+app.use((err, req, res, _next) => {
   console.error('Unhandled Error:', err.stack);
-  res.status(500).json({
-    success: false,
-    message: 'Something went wrong on the server.',
-  });
+  res.status(500).json({ success: false, message: 'Something went wrong on the server.' });
 });
 
-// ============================================
-// 8. START THE SERVER
-// ============================================
+// 9. Start — bind to 0.0.0.0 so all LAN devices can reach the API
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🧙 Diagonalley Server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🧙 Alohomora Server: http://localhost:${PORT}`);
+  console.log(`🌐 LAN access:       http://0.0.0.0:${PORT}`);
 });
