@@ -5,16 +5,21 @@
 // Fix: Force IPv4 DNS globally — needed on Windows for MongoDB Atlas SRV lookup
 import dns from 'dns';
 dns.setDefaultResultOrder('ipv4first');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
-// 1. Load env vars
-dotenv.config();
+// 1. Load env vars — resolve path relative to THIS file (server.js),
+//    so it works whether we start from /server or from the project root.
+const __dirname = dirname(fileURLToPath(import.meta.url));
+dotenv.config({ path: join(__dirname, '.env') });
 
 // 2. Connect to MongoDB
 connectDB();
