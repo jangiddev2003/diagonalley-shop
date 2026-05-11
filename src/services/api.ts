@@ -3,8 +3,24 @@
 // ============================================
 // Centralised place for all HTTP calls to the backend.
 // Components should import these functions instead of calling fetch() directly.
+//
+// HOW THE API BASE URL WORKS PER ENVIRONMENT:
+//
+// 1. LOCAL DEVELOPMENT (npm run dev:all):
+//    - VITE_API_URL is NOT set → API_BASE = '' (empty string)
+//    - fetch('/api/...') calls are relative → Vite's proxy in vite.config.ts
+//      intercepts them and forwards to http://127.0.0.1:5000 → no CORS issues
+//
+// 2. PRODUCTION (Vercel frontend + Render backend):
+//    - VITE_API_URL is set in Vercel env settings to your Render URL
+//      e.g. VITE_API_URL=https://diagonalley-server.onrender.com
+//    - API_BASE = 'https://diagonalley-server.onrender.com'
+//    - fetch calls become full absolute URLs → CORS handled in server.js
 
-const API_BASE = '/api';
+// Production: full Render backend URL. Development: empty string (Vite proxy handles it).
+const API_BASE = import.meta.env.VITE_API_URL
+  ? `${import.meta.env.VITE_API_URL}/api`
+  : '/api';
 
 // ── Helper: build auth header ────────────────────────────────────────
 const authHeader = (token: string) => ({

@@ -1,4 +1,4 @@
-# Logs
+# ── Logs ────────────────────────────────────────────────────────────────────
 logs
 *.log
 npm-debug.log*
@@ -7,12 +7,29 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# ── Dependencies ─────────────────────────────────────────────────────────────
 node_modules
+
+# ── Build outputs ────────────────────────────────────────────────────────────
 dist
 dist-ssr
+
+# ── Environment variables ────────────────────────────────────────────────────
+# NEVER commit real .env files — they contain secrets (DB passwords, JWT keys).
+# Each developer/deployment platform creates their own .env from .env.example.
+.env
+.env.local
+.env.production
+.env.development
+*.env
+# Keep the example templates (no real secrets inside)
+!.env.example
+!server/.env.example
+
+# ── Local dev overrides ──────────────────────────────────────────────────────
 *.local
 
-# Editor directories and files
+# ── Editor directories ───────────────────────────────────────────────────────
 .vscode/*
 !.vscode/extensions.json
 .idea
