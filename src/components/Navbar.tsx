@@ -34,12 +34,12 @@ const extraLinks = [
   { path: '/platform',   label: '🚂 9¾'           },
 ];
 
-// House avatar emoji map
-const AVATAR_EMOJI: Record<string, string> = {
-  gryffindor: '🦁',
-  hufflepuff:  '🦡',
-  ravenclaw:   '🦅',
-  slytherin:   '🐍',
+// House avatar icon map
+const AVATAR_ICON: Record<string, string> = {
+  gryffindor: '/icons8-gryffindor-50.ico',
+  hufflepuff:  '/icons8-hufflepuff-50.ico',
+  ravenclaw:   '/icons8-ravenclaw-50.ico',
+  slytherin:   '/icons8-slytherin-50.ico',
 };
 
 // House border colours for the avatar ring
@@ -102,7 +102,7 @@ const Navbar = () => {
   };
 
   // Avatar display
-  const avatarEmoji = user?.avatar ? AVATAR_EMOJI[user.avatar] ?? '🧙' : '🧙';
+  const avatarIcon = user?.avatar ? AVATAR_ICON[user.avatar] ?? null : null;
   const avatarRing  = user?.avatar ? AVATAR_RING[user.avatar]  ?? 'ring-primary' : 'ring-primary';
 
   return (
@@ -174,9 +174,13 @@ const Navbar = () => {
                 onClick={() => setShowProfile(true)}
                 title={`${user?.username} — View Profile`}
                 className={`hidden sm:flex items-center justify-center w-9 h-9 rounded-full ring-2 ${avatarRing}
-                  bg-muted text-xl hover:scale-110 transition-all duration-200 glow-gold`}
+                  bg-muted overflow-hidden hover:scale-110 transition-all duration-200 glow-gold p-0.5`}
               >
-                {avatarEmoji}
+                {avatarIcon ? (
+                  <img src={avatarIcon} alt={user?.avatar ?? 'avatar'} className="w-full h-full object-contain" />
+                ) : (
+                  <span className="text-xl">🧙</span>
+                )}
               </button>
             ) : (
               // ── Logged out: show login link ─────────────────────
@@ -269,7 +273,11 @@ const Navbar = () => {
                   onClick={() => { setMobileOpen(false); setShowProfile(true); }}
                   className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medieval text-primary w-full text-left hover:bg-muted transition-all"
                 >
-                  <span className="text-lg">{avatarEmoji}</span>
+                  {avatarIcon ? (
+                    <img src={avatarIcon} alt={user?.avatar ?? 'avatar'} className="w-6 h-6 object-contain" />
+                  ) : (
+                    <span className="text-lg">🧙</span>
+                  )}
                   {user?.username} — Profile
                 </button>
                 <button

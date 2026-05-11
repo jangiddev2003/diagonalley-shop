@@ -9,31 +9,31 @@ import { X, LogOut, Wand2, Star, Clock, Shield } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { toast } from 'sonner';
 
-// ── Avatar images (emoji-based) ─────────────────────────────────
-const HOUSE_AVATARS: Record<string, { emoji: string; label: string; colors: string; border: string; glow: string }> = {
+// ── Avatar images (house icons) ─────────────────────────────────
+const HOUSE_AVATARS: Record<string, { icon: string; label: string; colors: string; border: string; glow: string }> = {
   gryffindor: {
-    emoji:  '🦁',
+    icon:   '/icons8-gryffindor-50.ico',
     label:  'Gryffindor',
     colors: 'from-red-800 to-yellow-700',
     border: 'border-red-500',
     glow:   'shadow-[0_0_20px_rgba(239,68,68,0.5)]',
   },
   hufflepuff: {
-    emoji:  '🦡',
+    icon:   '/icons8-hufflepuff-50.ico',
     label:  'Hufflepuff',
     colors: 'from-yellow-700 to-yellow-900',
     border: 'border-yellow-400',
     glow:   'shadow-[0_0_20px_rgba(234,179,8,0.5)]',
   },
   ravenclaw: {
-    emoji:  '🦅',
+    icon:   '/icons8-ravenclaw-50.ico',
     label:  'Ravenclaw',
     colors: 'from-blue-800 to-indigo-900',
     border: 'border-blue-400',
     glow:   'shadow-[0_0_20px_rgba(59,130,246,0.5)]',
   },
   slytherin: {
-    emoji:  '🐍',
+    icon:   '/icons8-slytherin-50.ico',
     label:  'Slytherin',
     colors: 'from-green-800 to-emerald-900',
     border: 'border-green-500',
@@ -116,10 +116,14 @@ const ProfilePanel = ({ onClose, onLogout }: Props) => {
           <div className="flex flex-col items-center gap-3 text-center">
             <div
               className={`w-24 h-24 rounded-full border-2 ${currentAvatar.border} ${currentAvatar.glow}
-                bg-gradient-to-br ${currentAvatar.colors} flex items-center justify-center text-5xl
-                transition-all duration-500`}
+                bg-gradient-to-br ${currentAvatar.colors} flex items-center justify-center
+                transition-all duration-500 overflow-hidden p-1`}
             >
-              {currentAvatar.emoji}
+              <img
+                src={currentAvatar.icon}
+                alt={currentAvatar.label}
+                className="w-full h-full object-contain drop-shadow-lg"
+              />
             </div>
 
             <div>
@@ -145,12 +149,16 @@ const ProfilePanel = ({ onClose, onLogout }: Props) => {
                   onClick={() => handleAvatarChange(key)}
                   disabled={savingAvatar}
                   title={meta.label}
-                  className={`relative aspect-square rounded-xl border-2 transition-all duration-300 flex items-center justify-center text-3xl
-                    bg-gradient-to-br ${meta.colors}
+                  className={`relative aspect-square rounded-xl border-2 transition-all duration-300 flex items-center justify-center
+                    bg-gradient-to-br ${meta.colors} overflow-hidden p-1.5
                     ${user.avatar === key ? `${meta.border} ${meta.glow} scale-105` : 'border-border opacity-60 hover:opacity-90 hover:scale-105'}
                     disabled:cursor-wait`}
                 >
-                  {meta.emoji}
+                  <img
+                    src={meta.icon}
+                    alt={meta.label}
+                    className="w-full h-full object-contain drop-shadow-md"
+                  />
                   {user.avatar === key && (
                     <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
                       <Star className="w-2.5 h-2.5 text-primary-foreground fill-current" />
