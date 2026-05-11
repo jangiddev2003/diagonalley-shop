@@ -127,8 +127,15 @@ app.use((err, req, res, _next) => {
 // 9. Start — bind to 0.0.0.0 so Render, LAN devices, and localhost can all reach the API.
 //    Render injects $PORT automatically; we default to 5000 for local dev.
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🧙 Alohomora Server running on port ${PORT}`);
-  console.log(`📡 Allowed CORS origins: ${[...allowedOrigins].join(', ')}`);
-  console.log(`🌿 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
-});
+
+// Only listen if not running on Vercel (Vercel serverless handles listening internally)
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🧙 Alohomora Server running on port ${PORT}`);
+    console.log(`📡 Allowed CORS origins: ${[...allowedOrigins].join(', ')}`);
+    console.log(`🌿 NODE_ENV: ${process.env.NODE_ENV || 'development'}`);
+  });
+}
+
+// Export the Express API so Vercel Serverless Functions can use it
+export default app;
