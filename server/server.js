@@ -10,10 +10,9 @@
 //   CLIENT_URL  — Your Vercel frontend URL (e.g. https://diagonalley-shop.vercel.app)
 //   PORT        — Automatically set by Render (do not override)
 
-// Fix: Force IPv4 DNS globally — needed on Windows AND Render for MongoDB Atlas SRV lookup
+// Fix: Prefer IPv4 DNS — needed on Windows AND Render for MongoDB Atlas SRV lookup
 import dns from 'dns';
 dns.setDefaultResultOrder('ipv4first');
-dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 import express from 'express';
 import cors from 'cors';
