@@ -23,9 +23,10 @@ interface AuthContextType {
 }
 
 interface RegisterData {
-  username: string;
-  email:    string;
-  password: string;
+  username:    string;
+  email:       string;
+  password:    string;
+  phoneNumber?: string;
 }
 
 // ── Context ──────────────────────────────────────────────────────────
@@ -91,9 +92,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   // ── REGISTER ──────────────────────────────────────────────────────
-  const register = async ({ username, email, password }: RegisterData) => {
+  const register = async ({ username, email, password, phoneNumber }: RegisterData) => {
     try {
-      const data = await authApi.register(username, email, password);
+      const data = await authApi.register(username, email, password, phoneNumber);
       if (data.success && data.token && data.user) {
         persistToken(data.token);
         setUser(data.user);

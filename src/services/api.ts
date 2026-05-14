@@ -51,11 +51,11 @@ export interface ApiResponse<T = void> {
 // ── Auth endpoints ────────────────────────────────────────────────────
 
 export const authApi = {
-  register: async (username: string, email: string, password: string) => {
+  register: async (username: string, email: string, password: string, phoneNumber?: string) => {
     const res = await fetch(`${API_BASE}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, email, password }),
+      body: JSON.stringify({ username, email, password, ...(phoneNumber ? { phoneNumber } : {}) }),
     });
     return res.json() as Promise<{ success: boolean; message: string; token?: string; user?: ApiUser }>;
   },
@@ -78,6 +78,34 @@ export const authApi = {
 
   logout: async () => {
     await fetch(`${API_BASE}/auth/logout`, { method: 'POST' }).catch(() => {});
+  },
+
+  // ── OTP Password Reset ─────────────────────────────────────────────
+  sendOtp: async (email: string) => {
+    const res = await fetch(`${API_BASE}/auth/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    });
+    return res.json() as Promise<{ success: boolean; message: string; otp?: string }>;
+  },
+
+  verifyOtp: async (email: string, otp: string) => {
+    const res = await fetch(`${API_BASE}/auth/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp }),
+    });
+    return res.json() as Promise<{ success: boolean; message: string }>;
+  },
+
+  resetPassword: async (email: string, newPassword: string) => {
+    const res = await fetch(`${API_BASE}/auth/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, newPassword }),
+    });
+    return res.json() as Promise<{ success: boolean; message: string }>;
   },
 };
 

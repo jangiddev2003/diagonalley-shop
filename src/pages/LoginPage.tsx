@@ -4,16 +4,18 @@ import { Lock, User, Loader2 } from 'lucide-react';
 import gateImg from '@/assets/hogwarts-gate.png';
 import { useAuth } from '@/context/AuthContext';
 
+
 const LoginPage = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
   // CHANGED: Using email instead of username for real authentication
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isOpening, setIsOpening] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [email,       setEmail]       = useState('');
+  const [password,    setPassword]    = useState('');
+  const [error,       setError]       = useState('');
+  const [isOpening,   setIsOpening]   = useState(false);
+  const [isSubmitting,setIsSubmitting]= useState(false);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,16 +127,15 @@ const LoginPage = () => {
             )}
           </button>
 
-          <div className="flex items-center justify-between text-xs font-body">
-            <button type="button" className="text-muted-foreground hover:text-primary transition-colors">
-              Forgot your spell?
-            </button>
+          <div className="flex items-center justify-end text-xs font-body">
             <Link to="/register" className="text-primary hover:text-primary/80 transition-colors font-semibold">
               New to Hogwarts? Enroll Here
             </Link>
           </div>
         </form>
       </div>
+
+
     </div>
   );
 };

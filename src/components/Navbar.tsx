@@ -177,7 +177,19 @@ const Navbar = () => {
                   bg-muted overflow-hidden hover:scale-110 transition-all duration-200 glow-gold p-0.5`}
               >
                 {avatarIcon ? (
-                  <img src={avatarIcon} alt={user?.avatar ?? 'avatar'} className="w-full h-full object-contain" />
+                  <img
+                    src={avatarIcon}
+                    alt={user?.avatar ?? 'avatar'}
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-contain select-none"
+                    style={{
+                      imageRendering: 'crisp-edges',
+                      filter: 'contrast(1.12) brightness(1.08) saturate(1.1) drop-shadow(0 1px 3px rgba(0,0,0,0.5))',
+                      WebkitBackfaceVisibility: 'hidden',
+                    }}
+                    draggable={false}
+                  />
                 ) : (
                   <span className="text-xl">🧙</span>
                 )}
@@ -274,7 +286,19 @@ const Navbar = () => {
                   className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medieval text-primary w-full text-left hover:bg-muted transition-all"
                 >
                   {avatarIcon ? (
-                    <img src={avatarIcon} alt={user?.avatar ?? 'avatar'} className="w-6 h-6 object-contain" />
+                    <img
+                      src={avatarIcon}
+                      alt={user?.avatar ?? 'avatar'}
+                      width={24}
+                      height={24}
+                      className="w-6 h-6 object-contain select-none"
+                      style={{
+                        imageRendering: 'crisp-edges',
+                        filter: 'contrast(1.12) brightness(1.08) saturate(1.1) drop-shadow(0 1px 3px rgba(0,0,0,0.5))',
+                        WebkitBackfaceVisibility: 'hidden',
+                      }}
+                      draggable={false}
+                    />
                   ) : (
                     <span className="text-lg">🧙</span>
                   )}

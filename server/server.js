@@ -75,12 +75,17 @@ app.use(
       // Allow any origin in our static allowlist
       if (allowedOrigins.has(origin)) return callback(null, true);
 
+      // Allow localhost/127.0.0.1 on any port (Vite may auto-shift to 8081, 8082, 8083...)
+      if (/^http:\/\/localhost:\d+$/.test(origin)) return callback(null, true);
+      if (/^http:\/\/127\.0\.0\.1:\d+$/.test(origin)) return callback(null, true);
+
       // Allow any Vercel preview deployment (*.vercel.app)
       if (/\.vercel\.app$/.test(origin)) return callback(null, true);
 
       // Allow local network devices (192.168.x.x and 10.x.x.x)
       if (/^http:\/\/192\.168\./.test(origin)) return callback(null, true);
       if (/^http:\/\/10\./.test(origin)) return callback(null, true);
+      if (/^http:\/\/172\.(1[6-9]|2\d|3[0-1])\./.test(origin)) return callback(null, true);
 
       // All other origins are blocked
       console.warn(`[CORS] Blocked origin: ${origin}`);
@@ -98,21 +103,41 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/api/auth', authRoutes);   // /api/auth/register, /api/auth/login, etc.
 app.use('/api/user', userRoutes);   // /api/user/profile, /api/user/avatar, etc.
 
+// Debug endpoint to check database connection
+app.get('/debug/users', async (req, res) => {
+  try {
+    const User = (await import('./models/User.js')).default;
+    const allUsers = await User.find({}, 'email username');
+    res.json({
+      message: 'All users in database',
+      count: allUsers.length,
+      users: allUsers.map(u => ({ email: u.email, username: u.username })),
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // 7. Health check — useful for Render's health check ping and debugging
 app.get('/', (req, res) => {
   res.json({
     message: '🧙 Alohomora — Diagonalley Shop API is running!',
     environment: process.env.NODE_ENV || 'development',
+    mongoConnected: require('mongoose').connection.readyState === 1,
     endpoints: {
       register:   'POST /api/auth/register',
       login:      'POST /api/auth/login',
       logout:     'POST /api/auth/logout',
+      sendOtp:    'POST /api/auth/send-otp',
+      verifyOtp:  'POST /api/auth/verify-otp',
+      resetPassword: 'POST /api/auth/reset-password',
       me:         'GET  /api/auth/me (protected)',
       profile:    'GET  /api/user/profile (protected)',
       avatar:     'PUT  /api/user/avatar (protected)',
       update:     'PUT  /api/user/update (protected)',
       sort:       'POST /api/user/sort (protected)',
       checkAuth:  'GET  /api/user/check-auth (protected)',
+      debug:      'GET  /debug/users',
     },
   });
 });

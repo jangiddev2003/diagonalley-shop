@@ -1,0 +1,83 @@
+============================================
+QUICK START - Run Frontend & Backend
+============================================
+
+Windows Command Prompt / Terminal:
+
+cd c:\git_projects\diagonalley-shop
+npm run dev:all
+
+
+Or double-click: start-dev.bat
+
+
+============================================
+What This Does
+============================================
+
+✅ Backend:  http://127.0.0.1:5001
+✅ Frontend: http://localhost:8080
+
+
+============================================
+Test from Another Device on Network
+============================================
+
+1. Get your local IP:
+   Windows: ipconfig
+   Look for IPv4 Address (192.168.x.x or 10.x.x.x)
+
+2. Open in browser on other device:
+   http://YOUR_IP:8080
+
+
+============================================
+Troubleshooting
+============================================
+
+❌ Port 5001 already in use:
+   taskkill /PID <pid> /F
+
+❌ Can't connect from other device:
+   - Check firewall (allow port 8080)
+   - Make sure using correct IP (not localhost)
+   - Both servers must be running
+
+❌ Database connection error:
+   - Check MONGO_URI in server/.env
+   - Check internet (MongoDB Atlas requires IP)
+
+
+============================================
+Test Forgot Password
+============================================
+
+1. Click "Forgot your spell?"
+2. Enter registered email
+3. OTP displays on screen (dev mode)
+4. Enter OTP
+5. Set new password
+6. Login with new password
+
+
+============================================
+Important Files
+============================================
+
+Frontend: src/components/OtpPopup.tsx
+Backend:  server/controllers/otpController.js
+API:      src/services/api.ts
+Config:   server/.env
+
+
+============================================
+Individual Commands
+============================================
+
+npm run dev:client      (Frontend only, port 8080)
+npm run dev:server      (Backend only, port 5001)
+npm run dev:all         (Both, recommended)
+npm run build           (Production build)
+
+
+Happy testing! 🧙‍♂️

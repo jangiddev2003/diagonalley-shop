@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🧙 Diagonalley OTP Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        .container {
+            background: #16213e;
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 30px;
+        }
+        h1 {
+            color: #d4af37;
+            text-align: center;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #0f3460;
+            border-left: 4px solid #d4af37;
+            border-radius: 5px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px 0;
+            font-weight: bold;
+            color: #d4af37;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #d4af37;
+            background: #16213e;
+            color: #eee;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #d4af37;
+            color: #16213e;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px 5px 5px 0;
+        }
+        button:hover {
+            background: #ffd700;
+        }
+        .response {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border: 1px solid #d4af37;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .success { color: #4ade80; }
+        .error { color: #f87171; }
+        .info { color: #60a5fa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧙 Diagonalley OTP Tester</h1>
+        <p style="text-align: center; color: #999;">Test the forgot password API directly</p>
+
+        <!-- Test 1: Backend Health -->
+        <div class="section">
+            <h3>1️⃣  Check Backend Connection</h3>
+            <button onclick="testBackend()">Test Backend Health</button>
+            <div id="backendResponse" class="response" style="display:none;"></div>
+        </div>
+
+        <!-- Test 2: Get All Users -->
+        <div class="section">
+            <h3>2️⃣  View All Users</h3>
+            <button onclick="getUsers()">Get All Users</button>
+            <div id="usersResponse" class="response" style="display:none;"></div>
+        </div>
+
+        <!-- Test 3: Send OTP -->
+        <div class="section">
+            <h3>3️⃣  Send OTP</h3>
+            <label>Email Address:</label>
+            <input type="email" id="otpEmail" placeholder="ronweasly@gmail.com" value="ronweasly@gmail.com">
+            <button onclick="sendOtp()">Send OTP</button>
+            <div id="otpResponse" class="response" style="display:none;"></div>
+        </div>
+
+        <!-- Test 4: Verify OTP -->
+        <div class="section">
+            <h3>4️⃣  Verify OTP</h3>
+            <label>Email:</label>
+            <input type="email" id="verifyEmail" placeholder="ronweasly@gmail.com" value="ronweasly@gmail.com">
+            <label>OTP Code (6 digits):</label>
+            <input type="text" id="otpCode" placeholder="123456" maxlength="6">
+            <button onclick="verifyOtp()">Verify OTP</button>
+            <div id="verifyResponse" class="response" style="display:none;"></div>
+        </div>
+
+        <!-- Test 5: Reset Password -->
+        <div class="section">
+            <h3>5️⃣  Reset Password</h3>
+            <label>Email:</label>
+            <input type="email" id="resetEmail" placeholder="ronweasly@gmail.com" value="ronweasly@gmail.com">
+            <label>New Password (min 6 chars):</label>
+            <input type="password" id="newPassword" placeholder="newPassword123">
+            <button onclick="resetPassword()">Reset Password</button>
+            <div id="resetResponse" class="response" style="display:none;"></div>
+        </div>
+
+        <div class="section" style="background: #1a3a3a; margin-top: 30px;">
+            <h3>📝 Instructions</h3>
+            <ol>
+                <li>Click "Test Backend Health" to verify connection</li>
+                <li>Click "Get All Users" to see registered users</li>
+                <li>Find your email in the list (or register first)</li>
+                <li>Click "Send OTP" with your email</li>
+                <li>Copy the OTP from the response</li>
+                <li>Click "Verify OTP" and paste the code</li>
+                <li>After verification, click "Reset Password"</li>
+                <li>Try logging in with new password</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://127.0.0.1:5001';
+
+        function displayResponse(elementId, data, isError = false) {
+            const elem = document.getElementById(elementId);
+            elem.style.display = 'block';
+            elem.className = 'response ' + (isError ? 'error' : 'info');
+            elem.textContent = JSON.stringify(data, null, 2);
+        }
+
+        async function testBackend() {
+            try {
+                const res = await fetch(`${API_URL}/`);
+                const data = await res.json();
+                displayResponse('backendResponse', data, false);
+            } catch (err) {
+                displayResponse('backendResponse', { error: err.message }, true);
+            }
+        }
+
+        async function getUsers() {
+            try {
+                const res = await fetch(`${API_URL}/debug/users`);
+                const data = await res.json();
+                displayResponse('usersResponse', data, !res.ok);
+            } catch (err) {
+                displayResponse('usersResponse', { error: err.message }, true);
+            }
+        }
+
+        async function sendOtp() {
+            const email = document.getElementById('otpEmail').value;
+            if (!email) {
+                alert('Please enter email');
+                return;
+            }
+            try {
+                const res = await fetch(`${API_URL}/api/auth/send-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+                displayResponse('otpResponse', data, !res.ok);
+            } catch (err) {
+                displayResponse('otpResponse', { error: err.message }, true);
+            }
+        }
+
+        async function verifyOtp() {
+            const email = document.getElementById('verifyEmail').value;
+            const otp = document.getElementById('otpCode').value;
+            if (!email || !otp) {
+                alert('Please fill all fields');
+                return;
+            }
+            try {
+                const res = await fetch(`${API_URL}/api/auth/verify-otp`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp })
+                });
+                const data = await res.json();
+                displayResponse('verifyResponse', data, !res.ok);
+            } catch (err) {
+                displayResponse('verifyResponse', { error: err.message }, true);
+            }
+        }
+
+        async function resetPassword() {
+            const email = document.getElementById('resetEmail').value;
+            const newPassword = document.getElementById('newPassword').value;
+            if (!email || !newPassword) {
+                alert('Please fill all fields');
+                return;
+            }
+            try {
+                const res = await fetch(`${API_URL}/api/auth/reset-password`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, newPassword })
+                });
+                const data = await res.json();
+                displayResponse('resetResponse', data, !res.ok);
+            } catch (err) {
+                displayResponse('resetResponse', { error: err.message }, true);
+            }
+        }
+    </script>
+</body>
+</html>

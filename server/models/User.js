@@ -47,6 +47,38 @@ const userSchema = new mongoose.Schema(
       select: false, // Never returned in normal queries
     },
 
+    // ── Phone & OTP (Password Reset) ─────────────────────────────────
+    phoneNumber: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+
+    // Temporary OTP (hashed, not stored in plain-text)
+    otp: {
+      type: String,
+      select: false,
+      default: null,
+    },
+
+    // When the OTP expires (5 minutes from generation)
+    otpExpiry: {
+      type: Date,
+      default: null,
+    },
+
+    // Rate-limiting: how many OTPs sent in the current window
+    otpAttempts: {
+      type: Number,
+      default: 0,
+    },
+
+    // Timestamp of the last OTP send (for rate-limit window)
+    otpLastSentAt: {
+      type: Date,
+      default: null,
+    },
+
     // ── Hogwarts Profile ────────────────────────────────────────────
     // Which house the sorting hat assigned (null until ceremony is run)
     hogwartsHouse: {

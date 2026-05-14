@@ -118,11 +118,21 @@ const ProfilePanel = ({ onClose, onLogout }: Props) => {
               className={`w-24 h-24 rounded-full border-2 ${currentAvatar.border} ${currentAvatar.glow}
                 bg-gradient-to-br ${currentAvatar.colors} flex items-center justify-center
                 transition-all duration-500 overflow-hidden p-1`}
+              style={{ imageRendering: 'crisp-edges' }}
             >
               <img
                 src={currentAvatar.icon}
                 alt={currentAvatar.label}
-                className="w-full h-full object-contain drop-shadow-lg"
+                width={88}
+                height={88}
+                className="w-full h-full object-contain select-none"
+                style={{
+                  imageRendering: 'crisp-edges',
+                  filter: 'contrast(1.12) brightness(1.08) saturate(1.1) drop-shadow(0 2px 6px rgba(0,0,0,0.55))',
+                  transform: 'scale(1.0)',
+                  WebkitBackfaceVisibility: 'hidden',
+                }}
+                draggable={false}
               />
             </div>
 
@@ -157,7 +167,15 @@ const ProfilePanel = ({ onClose, onLogout }: Props) => {
                   <img
                     src={meta.icon}
                     alt={meta.label}
-                    className="w-full h-full object-contain drop-shadow-md"
+                    width={48}
+                    height={48}
+                    className="w-full h-full object-contain select-none"
+                    style={{
+                      imageRendering: 'crisp-edges',
+                      filter: 'contrast(1.1) brightness(1.06) saturate(1.08) drop-shadow(0 1px 4px rgba(0,0,0,0.5))',
+                      WebkitBackfaceVisibility: 'hidden',
+                    }}
+                    draggable={false}
                   />
                   {user.avatar === key && (
                     <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary flex items-center justify-center">

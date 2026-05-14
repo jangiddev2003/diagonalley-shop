@@ -1,0 +1,219 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    🧙 DIAGONALLEY SHOP - QUICK SETUP GUIDE                  ║
+║                       Run Frontend & Backend Locally                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📌 STEP 1: OPEN COMMAND PROMPT / TERMINAL
+═══════════════════════════════════════════════════════════════════════════════
+
+Press: Windows Key + R
+Type: cmd
+Press: Enter
+
+OR
+
+Shift + Right-click in folder → Open Command Prompt here
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📌 STEP 2: NAVIGATE TO PROJECT
+═══════════════════════════════════════════════════════════════════════════════
+
+Type:
+    cd c:\git_projects\diagonalley-shop
+
+Press: Enter
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📌 STEP 3: START BOTH SERVERS
+═══════════════════════════════════════════════════════════════════════════════
+
+Type:
+    npm run dev:all
+
+Press: Enter
+
+⏳ Wait 15-30 seconds for both servers to start...
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ ✅ WHAT YOU SHOULD SEE
+═══════════════════════════════════════════════════════════════════════════════
+
+In the terminal, you should see:
+
+    [SERVER] 🧙 Alohomora Server running on port 5001
+    [SERVER] 📡 Allowed CORS origins: ...
+    [CLIENT] VITE v5.4.19 ready in 1234 ms
+    [CLIENT] ➜  Local:   http://localhost:8080/
+    [CLIENT] ➜  Network: http://192.168.x.x:8080/
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🌐 STEP 4: OPEN IN BROWSER
+═══════════════════════════════════════════════════════════════════════════════
+
+Open your web browser and go to:
+
+    http://localhost:8080
+
+The Diagonalley Shop should load! 🎉
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🧪 STEP 5: TEST THE FORGOT PASSWORD FEATURE
+═══════════════════════════════════════════════════════════════════════════════
+
+1️⃣  On the login page, click: "Forgot your spell?"
+
+2️⃣  In the popup:
+    • Enter your registered email address
+    • Example: test@hogwarts.edu
+
+3️⃣  Click: "🦉 Send OTP via Owl Post"
+
+4️⃣  The OTP will appear on screen in a golden box:
+    ┌─────────────────────────────┐
+    │ Your OTP (for dev/testing): │
+    │        123456               │
+    └─────────────────────────────┘
+
+5️⃣  Enter the 6-digit code into the OTP input boxes
+
+6️⃣  Click: "🔑 Verify Spell ✨"
+
+7️⃣  Set your new password (minimum 6 characters)
+
+8️⃣  Click: "🔓 Reset My Spell"
+
+9️⃣  Success! ✅ 
+    Now try logging in with your new password
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🔗 ACCESSING FROM ANOTHER DEVICE (Phone/Tablet/Another PC)
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Find your computer's local IP address:
+   • In terminal, type: ipconfig
+   • Look for "IPv4 Address"
+   • Example: 192.168.1.100
+
+2. On another device, open browser and go to:
+   http://192.168.1.100:8080
+   
+   (Replace 192.168.1.100 with YOUR IP)
+
+3. The app should load! 🎉
+   All API calls work through the local network
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📡 SERVER PORTS
+═══════════════════════════════════════════════════════════════════════════════
+
+Frontend (Vite):    http://localhost:8080   [Main app]
+Backend (Express):  http://127.0.0.1:5001   [API server]
+API Proxy:          /api                     [Through frontend]
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ ⚙️  SEPARATE COMMANDS (if needed)
+═══════════════════════════════════════════════════════════════════════════════
+
+Start backend only:
+    npm run dev:server
+
+Start frontend only:
+    npm run dev:client
+
+Build for production:
+    npm run build
+
+Run tests:
+    npm run test
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ ⚠️  TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+❌ ERROR: Port 5001 already in use
+   Solution:
+   1. Open Task Manager (Ctrl + Shift + Esc)
+   2. Find "node.exe" processes
+   3. Right-click → End Task
+   4. Try npm run dev:all again
+
+❌ ERROR: MongoDB connection failed
+   Solution:
+   • Check internet connection (MongoDB Atlas needs it)
+   • Verify MONGO_URI in server/.env
+   • Check MongoDB Atlas IP whitelist (add your IP)
+
+❌ Blank page on http://localhost:8080
+   Solution:
+   1. Clear browser cache (Ctrl + Shift + Delete)
+   2. Hard refresh (Ctrl + F5)
+   3. Check browser console (F12)
+   4. Check server logs in terminal
+
+❌ Can't access from another device
+   Solution:
+   1. Verify you're using correct LOCAL IP (not 127.0.0.1)
+   2. Check Windows Firewall (allow port 8080)
+   3. Both devices must be on same WiFi network
+   4. Type full URL (http://IP:8080, not just IP:8080)
+
+❌ "CORS error" in browser console
+   Solution:
+   • Make sure backend is running on port 5001
+   • Check server logs for CORS messages
+   • Frontend proxy might not be working
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 📝 KEY FILES CHANGED (Email-based OTP)
+═══════════════════════════════════════════════════════════════════════════════
+
+Frontend:
+  • src/components/OtpPopup.tsx        ← Email input + OTP display
+  • src/services/api.ts                ← Email API calls
+  • src/pages/LoginPage.tsx            ← Forgot password trigger
+
+Backend:
+  • server/controllers/otpController.js ← Email OTP logic
+  • server/routes/authRoutes.js        ← OTP endpoints
+  • server/models/User.js              ← User schema
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ ✨ WHAT'S NEW (Email-based Forgot Password)
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ Changed from mobile number to email address
+✅ OTP displays on screen for dev/testing
+✅ Professional UI with Hogwarts theming
+✅ Email validation (proper email format)
+✅ Rate limiting (3 OTP per 15 minutes per email)
+✅ OTP hashing (bcrypt)
+✅ 5-minute OTP expiry
+✅ Smooth 3-step password reset flow
+✅ Full error messages and feedback
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ 🎯 READY TO START?
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Open Command Prompt
+2. cd c:\git_projects\diagonalley-shop
+3. npm run dev:all
+4. Open http://localhost:8080
+5. Test the forgot password feature! 🧪
+
+Questions? Check IMPLEMENTATION_COMPLETE.md for detailed info.
+
+Happy testing! 🧙‍♂️✨

@@ -58,6 +58,7 @@ const RegisterPage = () => {
       username: form.name,
       email: form.email,
       password: form.password,
+      phoneNumber: form.mobile || undefined,
     });
 
     if (result.success) {
@@ -133,12 +134,18 @@ const RegisterPage = () => {
           </div>
 
           <div>
-            <label className="block font-display text-xs font-semibold text-foreground mb-1">Mobile Number (Optional)</label>
+            <label className="block font-display text-xs font-semibold text-foreground mb-1">
+              📱 Mobile Number
+              <span className="text-muted-foreground font-normal ml-1">(for password reset)</span>
+            </label>
             <input
               type="tel" name="mobile" value={form.mobile} onChange={handleChange}
-              placeholder="+44 7700 900000"
+              placeholder="+91 98765 43210"
               className="w-full px-4 py-2.5 rounded-lg bg-muted border border-border text-foreground text-sm font-body placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             />
+            <p className="text-[11px] text-muted-foreground font-body mt-1">
+              Required to use &quot;Forgot your spell?&quot; password reset.
+            </p>
           </div>
 
           <div>

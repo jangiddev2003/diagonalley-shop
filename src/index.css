@@ -339,3 +339,23 @@
 .animate-ring-pulse {
   animation: ring-pulse 2s ease-in-out infinite;
 }
+
+/* ── House Avatar — crisp high-DPI rendering ──────────────────────── */
+/* Applied to all house icon <img> elements for sharp retina display.  */
+.avatar-crisp {
+  image-rendering: -webkit-optimize-contrast; /* Safari */
+  image-rendering: crisp-edges;               /* Standard */
+  -ms-interpolation-mode: nearest-neighbor;   /* IE/Edge legacy */
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* On high-DPI screens: prevent blurring from GPU subpixel rendering */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .avatar-crisp {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    transform: translateZ(0); /* Force GPU layer for sharpest output */
+  }
+}

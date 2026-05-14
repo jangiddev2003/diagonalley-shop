@@ -1,0 +1,159 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║              🧙 DIAGNOSTIC STEPS - Forgot Password Not Working              ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+═══════════════════════════════════════════════════════════════════════════════
+ STEP 1: Check Backend is Running & Connected to MongoDB
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Open browser:
+   http://127.0.0.1:5001
+
+2. You should see:
+   {
+     "message": "🧙 Alohomora — Diagonalley Shop API is running!",
+     "mongoConnected": true,  ← THIS MUST BE TRUE
+     "environment": "development",
+     "endpoints": { ... }
+   }
+
+❌ If mongoConnected = false:
+   → MongoDB connection failed
+   → Check MONGO_URI in server/.env
+   → Check internet connection
+   → Check MongoDB Atlas IP whitelist
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ STEP 2: Check if User Exists in Database
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Open browser:
+   http://127.0.0.1:5001/debug/users
+
+2. You should see all users in the database:
+   {
+     "message": "All users in database",
+     "count": 2,
+     "users": [
+       { "email": "test@hogwarts.edu", "username": "Harry" },
+       { "email": "ronweasly@gmail.com", "username": "Ron" }
+     ]
+   }
+
+❌ If user NOT in list:
+   → Register the user first before trying password reset
+   → Go to /register and create an account
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ STEP 3: Check Server Logs During OTP Send
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Watch the server terminal where you ran: npm run dev:all
+
+2. Try forgot password with your email
+
+3. Look for logs like:
+   ✅ GOOD LOG:
+   [sendOtp] Searching for user with email: ronweasly@gmail.com
+   [sendOtp] User found: 507f1f77bcf36cd799439011
+   [OTP] Email: ronweasly@gmail.com  |  OTP: 123456  |  Expires: ...
+
+   ❌ BAD LOG:
+   [sendOtp] Searching for user with email: ronweasly@gmail.com
+   [sendOtp] User not found for email: ronweasly@gmail.com
+   → This means user doesn't exist. Register first!
+
+   ❌ ERROR LOG:
+   [sendOtp] ERROR: [error message here]
+   → Check what error is shown
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ STEP 4: Verify Email is Correct
+═══════════════════════════════════════════════════════════════════════════════
+
+Make sure:
+✓ Email matches exactly (case doesn't matter but spelling does)
+✓ No extra spaces before/after
+✓ User is registered with that exact email
+
+Example:
+  ✅ CORRECT: "ronweasly@gmail.com" matches "ronweasly@gmail.com"
+  ❌ WRONG: "ronweasly@gmail.com" vs "ronweasly@email.com"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ STEP 5: If User Doesn't Exist - Register First
+═══════════════════════════════════════════════════════════════════════════════
+
+1. Open: http://localhost:8080
+2. Click "New to Hogwarts? Enroll Here"
+3. Fill form:
+   • Username: (any name)
+   • Email: ronweasly@gmail.com (exactly as you'll use for password reset)
+   • Password: (min 6 chars)
+4. Click "Accio Register"
+5. Login with those credentials
+6. Logout
+7. Now try "Forgot your spell?" with same email
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ STEP 6: Try Forgot Password Again
+═══════════════════════════════════════════════════════════════════════════════
+
+1. On login page, click: "Forgot your spell?"
+2. Enter exact email: ronweasly@gmail.com
+3. Click: "🦉 Send OTP via Owl Post"
+
+Expected flow:
+✅ No error message
+✅ OTP displays in golden box on same screen
+✅ Server logs show [OTP] Email: ronweasly@gmail.com | OTP: 123456
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ COMPLETE TROUBLESHOOTING FLOWCHART
+═══════════════════════════════════════════════════════════════════════════════
+
+ERROR: "Something went wrong on the server"
+   ├─→ Check: http://127.0.0.1:5001
+   │    ├─→ No response? → Backend not running → npm run dev:all
+   │    ├─→ mongoConnected = false? → MongoDB issue
+   │    └─→ Shows JSON? → Continue to next step
+   │
+   ├─→ Check: http://127.0.0.1:5001/debug/users
+   │    ├─→ ronweasly@gmail.com NOT in list? → Register the user first
+   │    ├─→ ronweasly@gmail.com in list? → Continue to next step
+   │    └─→ Error response? → Server logs error
+   │
+   ├─→ Watch server terminal while sending OTP
+   │    ├─→ "User not found"? → Email doesn't exist, register it
+   │    ├─→ "User found" + OTP shown? → It should work now!
+   │    └─→ ERROR in logs? → Take a screenshot of that error
+
+ERROR: "No wizard found with that email address"
+   → This is GOOD (means backend working)
+   → You need to register that email first
+
+ERROR: Can't reach backend (no response)
+   → Backend not running
+   → Terminal shows errors on startup?
+   → Check MongoDB connection
+
+
+═══════════════════════════════════════════════════════════════════════════════
+ NEXT: Tell me the result of these checks
+═══════════════════════════════════════════════════════════════════════════════
+
+Please try these diagnostic steps and report:
+
+1. What does http://127.0.0.1:5001 show?
+2. What does http://127.0.0.1:5001/debug/users show?
+3. Is "ronweasly@gmail.com" in the users list?
+4. What logs appear in terminal when you try forgot password?
+5. If any ERROR logs, paste the exact error message
+
+This will help identify exactly what's wrong!

@@ -30,7 +30,7 @@ const safeUser = (user) => ({
 // ──────────────────────────────────────────────────────────────────────
 export const register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, phoneNumber } = req.body;
 
     if (!username || !email || !password) {
       return res.status(400).json({ success: false, message: 'Please provide username, email, and password.' });
@@ -44,7 +44,17 @@ export const register = async (req, res) => {
       return res.status(400).json({ success: false, message: 'A wizard with this email already exists! Try logging in.' });
     }
 
-    const user = await User.create({ username, email: email.toLowerCase(), password });
+    // Normalise phone: strip spaces, dashes, parentheses for consistent lookup
+    const normalizedPhone = phoneNumber
+      ? phoneNumber.replace(/[\s\-().+]/g, '').trim() || null
+      : null;
+
+    const user = await User.create({
+      username,
+      email: email.toLowerCase(),
+      password,
+      ...(normalizedPhone ? { phoneNumber: normalizedPhone } : {}),
+    });
     user.logActivity('Account created');
     await user.save();
 
